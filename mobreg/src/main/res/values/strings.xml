@@ -4,5 +4,5 @@
     <string name="buttonOmskState">Омская область</string>
     <string name="title_hospitals_activity">Выберите мед. учреждение</string>
     <string name="title_regions_activity">Выберите населенный пункт</string>
-    <string name="title_departments_activity">Выберите специализацию врача</string>
+    <string name="title_departments_activity">Выберите отделение</string>
 </resources>

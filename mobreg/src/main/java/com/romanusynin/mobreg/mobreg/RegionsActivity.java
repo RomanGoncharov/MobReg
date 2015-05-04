@@ -16,7 +16,7 @@ public class RegionsActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.regions_layout);
+        setContentView(R.layout.loading_layout);
         MyTask task = new MyTask();
         task.execute();
 
@@ -37,6 +37,7 @@ public class RegionsActivity extends Activity{
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            setContentView(R.layout.regions_layout);
             RegionAdapter adapter = new RegionAdapter(RegionsActivity.this, this.regions);
             ListView listView = (ListView) findViewById(R.id.lvMain);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

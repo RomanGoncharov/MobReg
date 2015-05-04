@@ -40,6 +40,10 @@ public class Hospital implements Serializable {
         return address;
     }
 
+    public String getNumberPhone() {
+        return numberPhone;
+    }
+
     public String getUrl() {
         return url;
     }

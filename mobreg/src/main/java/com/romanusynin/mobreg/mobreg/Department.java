@@ -18,6 +18,22 @@ public class Department implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setCountTickets(String countTickets) {
+        this.countTickets = countTickets;
+    }
+
     public String getCountTickets() {
         return countTickets;
     }

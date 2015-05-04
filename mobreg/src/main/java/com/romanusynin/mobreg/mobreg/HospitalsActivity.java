@@ -14,7 +14,7 @@ public class HospitalsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.hospitals_layout);
+        setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
         String region_url;
         try {
@@ -41,6 +41,7 @@ public class HospitalsActivity extends Activity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            setContentView(R.layout.hospitals_layout);
             HospitalAdapter adapter = new HospitalAdapter(HospitalsActivity.this, this.hospitals);
             ListView listView = (ListView) findViewById(R.id.lvHospitals);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 public class DepartmentAdapter extends ArrayAdapter<Department> {
 
-    DepartmentAdapter(Context context, ArrayList<Department> hospitals) {
-        super(context, 0, hospitals);
+    DepartmentAdapter(Context context, ArrayList<Department> departments) {
+        super(context, 0, departments);
     }
 
     @Override
@@ -22,9 +22,9 @@ public class DepartmentAdapter extends ArrayAdapter<Department> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_listview, parent, false);
         }
         TextView tvName = (TextView) convertView.findViewById(R.id.text1);
-        TextView tvCountHospital = (TextView) convertView.findViewById(R.id.text2);
+        TextView tvCountTikets = (TextView) convertView.findViewById(R.id.text2);
         tvName.setText(department.getName());
-        tvCountHospital.setText(department.getCountTickets());
+        tvCountTikets.setText(department.getCountTickets());
         return convertView;
     }
 }
