@@ -18,10 +18,10 @@ public class DoctorsActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
-        department = (Department) intent.getExtras().getSerializable("department");
-        String departmentUrl = department.getUrl();
+        this.department= (Department) intent.getExtras().getSerializable("department");
+        String hospitalUrl = department.getUrl();
         MyTask task = new MyTask();
-        task.execute(departmentUrl);
+        task.execute(hospitalUrl);
     }
 
     class MyTask extends AsyncTask<String, Void, Void> {
@@ -41,9 +41,9 @@ public class DoctorsActivity extends Activity{
                 setContentView(R.layout.error_net_layout);
             }
             else {
-                setContentView(R.layout.departments_layout);
-                TextView nameHospital = (TextView)findViewById(R.id.nameHospital);
-                nameHospital.setText(department.getName());
+                setContentView(R.layout.doctors_layout);
+                TextView nameDepartment = (TextView)findViewById(R.id.nameDepartment);
+                nameDepartment.setText(department.getName());
                 DoctorAdapter adapter = new DoctorAdapter(DoctorsActivity.this, this.doctors);
                 ListView listView = (ListView) findViewById(R.id.lvDepartments);
                 listView.setAdapter(adapter);

@@ -4,13 +4,15 @@ public class Doctor {
     private String name;
     private String office;
     private String sector;
+    private String specialization;
     private int id;
 
-    public Doctor(String name, String office, int id, String sector) {
+    public Doctor(String name, String office, String sector, String specialization, int id) {
         this.name = name;
         this.office = office;
-        this.id = id;
         this.sector = sector;
+        this.specialization = specialization;
+        this.id = id;
     }
 
     public void setName(String name) {
@@ -43,5 +45,13 @@ public class Doctor {
 
     public int getId() {
         return id;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
     }
 }

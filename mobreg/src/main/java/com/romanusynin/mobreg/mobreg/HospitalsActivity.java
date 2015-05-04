@@ -57,8 +57,6 @@ public class HospitalsActivity extends Activity {
 
             });
             listView.setAdapter(adapter);
-
-            listView.setAdapter(adapter);
         }
     }
 }

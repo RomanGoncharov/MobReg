@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -68,6 +69,18 @@ public class DepartmentsActivity extends Activity {
             }
             DepartmentAdapter adapter = new DepartmentAdapter(DepartmentsActivity.this, this.departments);
             ListView listView = (ListView) findViewById(R.id.lvDepartments);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> view, View v, int position,long id){
+
+                        Department selectedDepartment = (Department) view.getItemAtPosition(position);
+                        Intent intent = new Intent(DepartmentsActivity.this, DoctorsActivity.class);
+                        intent.putExtra("department", selectedDepartment);
+                        startActivity(intent);
+                    }
+
+                });
             listView.setAdapter(adapter);
             }
         }

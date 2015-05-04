@@ -96,7 +96,19 @@ public class Parser {
             Document doc = Jsoup.connect(Constants.DOMAIN + urlDepartment).get();
             ArrayList<Doctor> doctorsArrayList = new ArrayList<Doctor>();
             Elements doctorsElements = doc.select(".table_week");
-
+            for (int i=0;i<doctorsElements.size(); i++){
+                String[] doctorBasicStr = doctorsElements.get(i).select(".table_doctor_line").text().split(" ");
+                String name = doctorBasicStr[0]+" "+doctorBasicStr[1]+" "+doctorBasicStr[2];
+                String specialization = doctorBasicStr[3];
+                String office = doctorsElements.get(i).select(".kabinet").text();
+                if (office.length() > 0){
+                    office = "Кабинет № " + office;
+                }
+                String sector = doctorsElements.get(i).select(".table_doctor_room").get(0).text();
+                Doctor doctor = new Doctor(name, office, sector, specialization, i);
+                doctorsArrayList.add(doctor);
+            }
+            return doctorsArrayList;
         }
         catch (IOException e) {
             e.printStackTrace();
