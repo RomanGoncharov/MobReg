@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,9 +21,9 @@ public class DoctorsActivity extends Activity{
         setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
         this.department= (Department) intent.getExtras().getSerializable("department");
-        String hospitalUrl = department.getUrl();
+        String departmentUrl = department.getUrl();
         MyTask task = new MyTask();
-        task.execute(hospitalUrl);
+        task.execute(departmentUrl);
     }
 
     class MyTask extends AsyncTask<String, Void, Void> {
@@ -46,6 +48,19 @@ public class DoctorsActivity extends Activity{
                 nameDepartment.setText(department.getName());
                 DoctorAdapter adapter = new DoctorAdapter(DoctorsActivity.this, this.doctors);
                 ListView listView = (ListView) findViewById(R.id.lvDepartments);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> view, View v, int position,long id){
+
+                        Doctor selectedDoctor = (Doctor) view.getItemAtPosition(position);
+                        Intent intent = new Intent(DoctorsActivity.this, WorkDaysActivity.class);
+                        intent.putExtra("department", department);
+                        intent.putExtra("doctor", selectedDoctor);
+                        startActivity(intent);
+                    }
+
+                });
                 listView.setAdapter(adapter);
             }
         }

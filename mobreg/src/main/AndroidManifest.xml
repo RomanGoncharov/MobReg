@@ -36,6 +36,10 @@
                           android:label="@string/title_doctors_activity" >
                 </activity>
 
+                <activity android:name=".WorkDaysActivity"
+                          android:label="@string/title_work_days_activity" >
+                </activity>
+
     </application>
 
 </manifest>

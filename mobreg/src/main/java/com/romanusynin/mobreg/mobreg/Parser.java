@@ -3,10 +3,13 @@ package com.romanusynin.mobreg.mobreg;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Parser {
 
@@ -109,6 +112,30 @@ public class Parser {
                 doctorsArrayList.add(doctor);
             }
             return doctorsArrayList;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public static ArrayList<WorkDay> getWorkDays(String urlDepartment, int doctor_id){
+        try {
+            Document doc = Jsoup.connect(Constants.DOMAIN + urlDepartment).get();
+            ArrayList<WorkDay> workDaysArrayList = new ArrayList<WorkDay>();
+            Elements workDaysElements = doc.select(".list_choose_time").get(doctor_id).select(".time_table_green_step4");
+            for (int i=0;i<workDaysElements.size(); i++){
+                String date = workDaysElements.get(i).select("input[name=date]").get(0).attr("value");
+                List<Node> timeElements = workDaysElements.get(i).select(".date_label").get(0).childNodes();
+                String workTimeInterval = timeElements.get(0)+":"+timeElements.get(1).childNode(0).toString()+
+                        timeElements.get(2)+":" + timeElements.get(3).childNode(0).toString();
+                String freeTalons = "свободно талонов: " + timeElements.get(4).childNode(0).toString();
+                String url = workDaysElements.get(i).select("input[name=href]").get(0).attr("value");
+                WorkDay workDay = new WorkDay(date, workTimeInterval, url, freeTalons);
+                workDaysArrayList.add(workDay);
+            }
+            return workDaysArrayList;
         }
         catch (IOException e) {
             e.printStackTrace();

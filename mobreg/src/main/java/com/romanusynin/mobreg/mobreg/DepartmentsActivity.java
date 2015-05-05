@@ -48,15 +48,14 @@ public class DepartmentsActivity extends Activity {
                 setContentView(R.layout.error_net_layout);
             }
             else {
-            setContentView(R.layout.departments_layout);
-            TextView nameHospital = (TextView)findViewById(R.id.nameHospital);
-            nameHospital.setText(hospital.getName());
-            TextView addressHospital = (TextView)findViewById(R.id.addressHospital);
-            addressHospital.setText(hospital.getAddress());
-            if (hospital.getNumberPhone() != null) {
+                setContentView(R.layout.departments_layout);
+                TextView nameHospital = (TextView)findViewById(R.id.nameHospital);
+                nameHospital.setText(hospital.getName());
+                TextView addressHospital = (TextView)findViewById(R.id.addressHospital);
+                addressHospital.setText(hospital.getAddress());
+
                 Button callNumber = (Button) findViewById(R.id.phoneHospital);
                 callNumber.setText("Тел. " + hospital.getNumberPhone());
-
                 callNumber.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -65,7 +64,9 @@ public class DepartmentsActivity extends Activity {
                         startActivity(intent);
                     }
                 });
-
+                if (hospital.getNumberPhone() == null) {
+                    callNumber.setVisibility(View.GONE);
+                }
             }
             DepartmentAdapter adapter = new DepartmentAdapter(DepartmentsActivity.this, this.departments);
             ListView listView = (ListView) findViewById(R.id.lvDepartments);
@@ -84,6 +85,6 @@ public class DepartmentsActivity extends Activity {
             listView.setAdapter(adapter);
             }
         }
-    }
 }
+
 

@@ -1,6 +1,8 @@
 package com.romanusynin.mobreg.mobreg;
 
-public class Doctor {
+import java.io.Serializable;
+
+public class Doctor implements Serializable{
     private String name;
     private String office;
     private String sector;

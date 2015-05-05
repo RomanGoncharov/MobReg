@@ -6,4 +6,5 @@
     <string name="title_regions_activity">Выберите населенный пункт</string>
     <string name="title_departments_activity">Выберите отделение</string>
     <string name="title_doctors_activity">Выберите врача</string>
+    <string name="title_work_days_activity">Выберите дату</string>
 </resources>
