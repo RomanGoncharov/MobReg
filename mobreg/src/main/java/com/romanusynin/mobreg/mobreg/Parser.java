@@ -15,7 +15,7 @@ public class Parser {
 
     public static ArrayList<Region> getRegions() {
         try {
-            Document doc = Jsoup.connect(Constants.REGIONS_URL).get();
+            Document doc = Jsoup.connect(Constants.REGIONS_URL).timeout(Constants.TIMEOUT).get();
             ArrayList<Region> regionsArrayList = new ArrayList<Region>();
             Elements regionsElements = doc.select("#city_list").get(0).select("li");
             for (int i=2; i<regionsElements.size(); i++)
@@ -36,7 +36,7 @@ public class Parser {
 
     public static ArrayList<Hospital> getHospitals(String urlRegion) {
         try {
-            Document doc = Jsoup.connect(Constants.DOMAIN+urlRegion).get();
+            Document doc = Jsoup.connect(Constants.DOMAIN+urlRegion).timeout(Constants.TIMEOUT).get();
             ArrayList<Hospital> hospitalsArrayList = new ArrayList<Hospital>();
             Elements hospitalsElements = doc.select("#pol_list").get(0).select("li");
             for (int i=0;i<hospitalsElements.size(); i++){
@@ -61,7 +61,7 @@ public class Parser {
 
     public static ArrayList<Department> getDepartments(String urlHospital) {
         try {
-            Document doc = Jsoup.connect(Constants.DOMAIN+urlHospital).get();
+            Document doc = Jsoup.connect(Constants.DOMAIN+urlHospital).timeout(Constants.TIMEOUT).get();
             ArrayList<Department> departmentArrayList = new ArrayList<Department>();
             Elements departmentsElements = doc.select("#spec_list").get(0).select("li");
             for (int i=0;i<departmentsElements.size(); i+=2){
@@ -81,7 +81,7 @@ public class Parser {
 
     public static String getHospitalPhone(String urlHospital){
         try {
-            Document doc = Jsoup.connect(Constants.DOMAIN + urlHospital).get();
+            Document doc = Jsoup.connect(Constants.DOMAIN + urlHospital).timeout(Constants.TIMEOUT).get();
             if (doc.select(".explanation_step").get(0).childNodes().size() == 1 || doc.select(".explanation_step").get(0).childNode(2).toString().length() == 1) {
                 return null;
             }
@@ -96,7 +96,7 @@ public class Parser {
 
     public static ArrayList<Doctor> getDoctors(String urlDepartment){
         try {
-            Document doc = Jsoup.connect(Constants.DOMAIN + urlDepartment).get();
+            Document doc = Jsoup.connect(Constants.DOMAIN + urlDepartment).timeout(Constants.TIMEOUT).get();
             ArrayList<Doctor> doctorsArrayList = new ArrayList<Doctor>();
             Elements doctorsElements = doc.select(".table_week");
             for (int i=0;i<doctorsElements.size(); i++){
@@ -120,9 +120,28 @@ public class Parser {
 
     }
 
-    public static ArrayList<WorkDay> getWorkDays(String urlDepartment, int doctor_id){
+    public static class WorkDaysAndWeek{
+        ArrayList <WorkDay> workDays;
+        String week;
+
+        public WorkDaysAndWeek(ArrayList<WorkDay> workDays, String week) {
+            this.workDays = workDays;
+            this.week = week;
+        }
+
+        public ArrayList<WorkDay> getWorkDays() {
+            return workDays;
+        }
+
+        public String getWeek() {
+            return week;
+        }
+    }
+
+    public static WorkDaysAndWeek getWorkDaysAndWeek(String urlDepartment, int doctor_id, int weekNumber){
         try {
-            Document doc = Jsoup.connect(Constants.DOMAIN + urlDepartment).get();
+            String formatedUrl = urlDepartment.substring(0, urlDepartment.length()-1)+ Integer.toString(weekNumber);
+            Document doc = Jsoup.connect(Constants.DOMAIN + formatedUrl).timeout(Constants.TIMEOUT).get();
             ArrayList<WorkDay> workDaysArrayList = new ArrayList<WorkDay>();
             Elements workDaysElements = doc.select(".list_choose_time").get(doctor_id).select(".time_table_green_step4");
             for (int i=0;i<workDaysElements.size(); i++){
@@ -135,7 +154,8 @@ public class Parser {
                 WorkDay workDay = new WorkDay(date, workTimeInterval, url, freeTalons);
                 workDaysArrayList.add(workDay);
             }
-            return workDaysArrayList;
+            String current_week = doc.select(".current_week").get(0).text();
+            return new WorkDaysAndWeek(workDaysArrayList, current_week);
         }
         catch (IOException e) {
             e.printStackTrace();

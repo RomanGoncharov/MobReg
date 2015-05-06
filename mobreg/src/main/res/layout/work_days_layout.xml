@@ -49,6 +49,12 @@
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/lvDepartments"/>
+            android:id="@+id/lvDepartments" android:visibility="gone"/>
+    <TextView
+            android:id="@+id/textCenter"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            />
 
 </LinearLayout>
