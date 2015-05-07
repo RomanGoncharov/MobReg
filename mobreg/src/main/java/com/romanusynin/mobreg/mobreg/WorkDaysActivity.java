@@ -27,17 +27,17 @@ public class WorkDaysActivity extends Activity {
         Intent intent = getIntent();
         department = (Department) intent.getExtras().getSerializable("department");
         doctor = (Doctor) intent.getExtras().getSerializable("doctor");
-        MyTaskParams paramsTask = new MyTaskParams(department.getUrl(), doctor.getId(), weekNumber);
+        MyTaskParams paramsTask = new MyTaskParams(department.getUrl(), doctor, weekNumber);
         new GetListWorkDaysTask().execute(paramsTask);
     }
 
     private static class MyTaskParams {
         String url;
-        int doctor_id;
+        Doctor doctor;
         int weekNumber;
 
-        MyTaskParams(String url, int doctor_id, int weekNumber) {
-            this.doctor_id = doctor_id;
+        MyTaskParams(String url, Doctor doctor, int weekNumber) {
+            this.doctor = doctor;
             this.url = url;
             this.weekNumber = weekNumber;
         }
@@ -53,7 +53,7 @@ public class WorkDaysActivity extends Activity {
 
         @Override
         protected Parser.WorkDaysAndWeek doInBackground(MyTaskParams... params) {
-            return Parser.getWorkDaysAndWeek(params[0].url, params[0].doctor_id, params[0].weekNumber);
+            return Parser.getWorkDaysAndWeek(params[0].url, params[0].doctor, params[0].weekNumber);
         }
 
         @Override
@@ -87,7 +87,7 @@ public class WorkDaysActivity extends Activity {
                     @Override
                     public void onClick(View arg0) {
                         weekNumber--;
-                        MyTaskParams paramsTask = new MyTaskParams(department.getUrl(), doctor.getId(), weekNumber);
+                        MyTaskParams paramsTask = new MyTaskParams(department.getUrl(), doctor, weekNumber);
                         WorkDaysActivity.this.new GetListWorkDaysTask().execute(paramsTask);
                     }
                 });
@@ -102,7 +102,7 @@ public class WorkDaysActivity extends Activity {
                     @Override
                     public void onClick(View arg0) {
                         weekNumber++;
-                        MyTaskParams paramsTask = new MyTaskParams(department.getUrl(), doctor.getId(), weekNumber);
+                        MyTaskParams paramsTask = new MyTaskParams(department.getUrl(), doctor, weekNumber);
                         WorkDaysActivity.this.new GetListWorkDaysTask().execute(paramsTask);
                     }
                 });

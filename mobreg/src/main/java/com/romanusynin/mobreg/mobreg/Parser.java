@@ -3,11 +3,13 @@ package com.romanusynin.mobreg.mobreg;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,17 +100,25 @@ public class Parser {
         try {
             Document doc = Jsoup.connect(Constants.DOMAIN + urlDepartment).timeout(Constants.TIMEOUT).get();
             ArrayList<Doctor> doctorsArrayList = new ArrayList<Doctor>();
-            Elements doctorsElements = doc.select(".table_week");
+            Elements doctorsElements = doc.select(".list_choose_doc");
             for (int i=0;i<doctorsElements.size(); i++){
                 String[] doctorBasicStr = doctorsElements.get(i).select(".table_doctor_line").text().split(" ");
                 String name = doctorBasicStr[0]+" "+doctorBasicStr[1]+" "+doctorBasicStr[2];
-                String specialization = doctorBasicStr[3];
+                String specialization = doctorsElements.get(i).select(".table_doctor_line").get(0).select("span").text();
                 String office = doctorsElements.get(i).select(".kabinet").text();
+                String id;
+                Elements docIdS = doctorsElements.get(i).select("input[name=pcod]");
+                if (docIdS.size() > 0){
+                    id = docIdS.get(0).val();
+                }
+                else{
+                    id = null;
+                }
                 if (office.length() > 0){
                     office = "Кабинет № " + office;
                 }
                 String sector = doctorsElements.get(i).select(".table_doctor_room").get(0).text();
-                Doctor doctor = new Doctor(name, office, sector, specialization, i);
+                Doctor doctor = new Doctor(name, office, sector, specialization, id);
                 doctorsArrayList.add(doctor);
             }
             return doctorsArrayList;
@@ -138,19 +148,38 @@ public class Parser {
         }
     }
 
-    public static WorkDaysAndWeek getWorkDaysAndWeek(String urlDepartment, int doctor_id, int weekNumber){
+    public static WorkDaysAndWeek getWorkDaysAndWeek(String urlDepartment, Doctor doctor, int weekNumber){
         try {
             String formatedUrl = urlDepartment.substring(0, urlDepartment.length()-1)+ Integer.toString(weekNumber);
             Document doc = Jsoup.connect(Constants.DOMAIN + formatedUrl).timeout(Constants.TIMEOUT).get();
             ArrayList<WorkDay> workDaysArrayList = new ArrayList<WorkDay>();
-            Elements workDaysElements = doc.select(".list_choose_time").get(doctor_id).select(".time_table_green_step4");
+            Elements workDaysElements = new Elements();
+            String doctor_id = doctor.getId();
+            if (doctor_id != null){
+                workDaysElements = doc.select(".list_choose_time").
+                        select(".time_table_green_step4").select("input[value="+doctor_id+"]");
+            }
+            else{
+                Elements doctorsElements = doc.select(".list_choose_doc");
+                for (int i=0;i<doctorsElements.size(); i++) {
+                    String[] doctorBasicStr = doctorsElements.get(i).select(".table_doctor_line").text().split(" ");
+                    String doctor_name = doctorBasicStr[0]+" "+doctorBasicStr[1]+" "+doctorBasicStr[2];
+                    if (doctor_name.equals(doctor.getName())){
+                        workDaysElements = doctorsElements.get(i).select(".list_choose_time").select(".time_table_green_step4");
+                        if (workDaysElements.size() > 0){
+                            doctor.setId(workDaysElements.get(0).select("input[name=pcod]").val());
+                        }
+                    }
+                }
+            }
             for (int i=0;i<workDaysElements.size(); i++){
-                String date = workDaysElements.get(i).select("input[name=date]").get(0).attr("value");
-                List<Node> timeElements = workDaysElements.get(i).select(".date_label").get(0).childNodes();
+                Element basicElement = (Element) workDaysElements.get(i).parentNode();
+                String date = basicElement.select("input[name=date]").get(0).attr("value");
+                List<Node> timeElements = basicElement.select(".date_label").get(0).childNodes();
                 String workTimeInterval = timeElements.get(0)+":"+timeElements.get(1).childNode(0).toString()+
                         timeElements.get(2)+":" + timeElements.get(3).childNode(0).toString();
                 String freeTalons = "свободно талонов: " + timeElements.get(4).childNode(0).toString();
-                String url = workDaysElements.get(i).select("input[name=href]").get(0).attr("value");
+                String url = basicElement.select("input[name=href]").get(0).attr("value");
                 WorkDay workDay = new WorkDay(date, workTimeInterval, url, freeTalons);
                 workDaysArrayList.add(workDay);
             }

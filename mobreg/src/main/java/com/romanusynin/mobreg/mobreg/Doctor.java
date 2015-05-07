@@ -7,9 +7,9 @@ public class Doctor implements Serializable{
     private String office;
     private String sector;
     private String specialization;
-    private int id;
+    private String id;
 
-    public Doctor(String name, String office, String sector, String specialization, int id) {
+    public Doctor(String name, String office, String sector, String specialization, String id) {
         this.name = name;
         this.office = office;
         this.sector = sector;
@@ -25,7 +25,7 @@ public class Doctor implements Serializable{
         this.office = office;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -45,7 +45,7 @@ public class Doctor implements Serializable{
         return sector;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
