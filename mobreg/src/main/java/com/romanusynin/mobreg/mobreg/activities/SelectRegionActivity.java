@@ -1,4 +1,4 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.activities;
 
 
 import android.app.Activity;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import com.romanusynin.mobreg.mobreg.R;
 
 public class SelectRegionActivity  extends Activity{
 

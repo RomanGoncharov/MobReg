@@ -1,4 +1,4 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,8 +6,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import com.romanusynin.mobreg.mobreg.objects.Parser;
+import com.romanusynin.mobreg.mobreg.R;
+import com.romanusynin.mobreg.mobreg.objects.Region;
+import com.romanusynin.mobreg.mobreg.adapters.RegionAdapter;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.adapters;
 
 
 import android.content.Context;
@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import com.romanusynin.mobreg.mobreg.objects.Doctor;
+import com.romanusynin.mobreg.mobreg.R;
 
 import java.util.ArrayList;
 
 public class DoctorAdapter extends ArrayAdapter <Doctor> {
 
-        DoctorAdapter(Context context, ArrayList<Doctor> doctors) {super(context, 0, doctors);}
+        public DoctorAdapter(Context context, ArrayList<Doctor> doctors) {super(context, 0, doctors);}
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {

@@ -2,9 +2,19 @@
     <string name="app_name">Мобильная регистратура</string>
     <string name="buttonOmsk">Омск</string>
     <string name="buttonOmskState">Омская область</string>
+
     <string name="title_hospitals_activity">Выберите мед. учреждение</string>
     <string name="title_regions_activity">Выберите населенный пункт</string>
     <string name="title_departments_activity">Выберите отделение</string>
     <string name="title_doctors_activity">Выберите врача</string>
     <string name="title_work_days_activity">Выберите дату</string>
+    <string name="title_tickets_activity">Выберите время приёма</string>
+    <string name="title_take_ticket_activity">Введите ваши данные</string>
+
+
+    <string name="hint_policy">Номер полиса</string>
+    <string name="hint_date_birth">Дата рождения</string>
+    <string name="alet_of_policy">Полис нового образца: вводить полностью 16 знаков номера (например: 5512345678901234)
+    \nВременное свидетельство: вводить 9 знаков номера (например: 048123456)
+    \nПолис старого образца: вводить только 6 знаков номера без серии (например: 123456)</string>
 </resources>

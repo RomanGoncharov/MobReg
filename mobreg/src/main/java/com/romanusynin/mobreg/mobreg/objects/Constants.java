@@ -1,4 +1,4 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.objects;
 
 public class Constants {
     public static final String DOMAIN = "http://www.omskzdrav.ru";

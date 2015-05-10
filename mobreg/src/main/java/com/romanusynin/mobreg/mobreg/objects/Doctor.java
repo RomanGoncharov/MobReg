@@ -1,4 +1,4 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.objects;
 
 import java.io.Serializable;
 

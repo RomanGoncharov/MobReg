@@ -1,4 +1,4 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.romanusynin.mobreg.mobreg.*;
+import com.romanusynin.mobreg.mobreg.adapters.HospitalAdapter;
+import com.romanusynin.mobreg.mobreg.objects.Constants;
+import com.romanusynin.mobreg.mobreg.objects.Hospital;
+import com.romanusynin.mobreg.mobreg.objects.Parser;
+import com.romanusynin.mobreg.mobreg.objects.Region;
+
 import java.util.ArrayList;
 
 public class HospitalsActivity extends Activity {

@@ -1,15 +1,13 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.objects;
 
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,5 +189,61 @@ public class Parser {
         }
         return null;
 
+    }
+
+
+    public static class TicketsAndWorkdaysUrlsObject{
+        ArrayList <Ticket> tickets;
+        String currentDate;
+        String prevWorkDayUrl;
+        String nextWorkDayUrl;
+
+        public TicketsAndWorkdaysUrlsObject(ArrayList<Ticket> tickets, String currentDate, String prevWorkDayUrl, String nextWorkDayUrl) {
+            this.tickets = tickets;
+            this.currentDate = currentDate;
+            this.prevWorkDayUrl = prevWorkDayUrl;
+            this.nextWorkDayUrl = nextWorkDayUrl;
+        }
+
+        public ArrayList<Ticket> getTickets() {
+            return tickets;
+        }
+
+        public String getPrevWorkDayUrl() {
+            return prevWorkDayUrl;
+        }
+
+        public String getNextWorkDayUrl() {
+            return nextWorkDayUrl;
+        }
+
+        public String getCurrentDate() {
+            return currentDate;
+        }
+    }
+
+    public static TicketsAndWorkdaysUrlsObject getTicketsAndWorkdays(String urlWorkday){
+        try {
+            Document doc = Jsoup.connect(Constants.DOMAIN + urlWorkday).timeout(Constants.TIMEOUT).get();
+            ArrayList <Ticket> ticketsArrayList = new ArrayList<Ticket>();
+            Elements ticketsElements = doc.select(".green_button_time");
+            for (int i=0;i<ticketsElements.size(); i++) {
+                String url = urlWorkday+"/"+ticketsElements.get(i).select(".id");
+                String time = ticketsElements.get(i).select("span").get(0).text();
+                Ticket ticket = new Ticket(time, url);
+                ticketsArrayList.add(ticket);
+            }
+            String current_day = doc.select(".current_day").text();
+            String prevDayUrl = null;
+            if (doc.select(".back_week").attr("style").length()==0){
+                prevDayUrl = urlWorkday.substring(0, urlWorkday.length()-10) + doc.select(".back_week").attr("href");
+            }
+            String nextDayUrl = urlWorkday.substring(0, urlWorkday.length()-10) + doc.select(".next_week").attr("href");
+            return new TicketsAndWorkdaysUrlsObject(ticketsArrayList, current_day, prevDayUrl, nextDayUrl);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

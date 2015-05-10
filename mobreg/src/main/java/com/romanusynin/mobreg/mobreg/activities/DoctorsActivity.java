@@ -1,4 +1,4 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.activities;
 
 
 import android.app.Activity;
@@ -9,6 +9,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.romanusynin.mobreg.mobreg.*;
+import com.romanusynin.mobreg.mobreg.adapters.DoctorAdapter;
+import com.romanusynin.mobreg.mobreg.objects.Department;
+import com.romanusynin.mobreg.mobreg.objects.Doctor;
+import com.romanusynin.mobreg.mobreg.objects.Parser;
 
 import java.util.ArrayList;
 

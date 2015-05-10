@@ -1,7 +1,9 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.objects;
 
 
-public class WorkDay {
+import java.io.Serializable;
+
+public class WorkDay implements Serializable{
     private String date;
     private String workTimeInterval;
     private String freeTalons;

@@ -25,13 +25,13 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
         <Button
-                android:id="@+id/prevWeek"
+                android:id="@+id/prevWorkDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Prev"
                 android:layout_alignParentTop="true" android:layout_alignParentLeft="true"/>
         <Button
-                android:id="@+id/nextWeek"
+                android:id="@+id/nextWorkDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Next"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Medium Text"
-                android:id="@+id/weekDates"
+                android:id="@+id/currentDate"
                 android:layout_centerVertical="true" android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
@@ -49,9 +49,9 @@
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/lvWorkDays" android:visibility="gone"/>
+            android:id="@+id/lvTickets" android:visibility="gone"/>
     <TextView
-            android:id="@+id/textCenter"
+            android:id="@+id/textEmpty"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"

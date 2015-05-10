@@ -1,8 +1,7 @@
-package com.romanusynin.mobreg.mobreg;
+package com.romanusynin.mobreg.mobreg.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.AsyncTask;
 import android.view.View;
@@ -10,6 +9,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.romanusynin.mobreg.mobreg.*;
+import com.romanusynin.mobreg.mobreg.adapters.WorkDayAdapter;
+import com.romanusynin.mobreg.mobreg.objects.*;
 
 import java.util.ArrayList;
 
@@ -71,7 +73,21 @@ public class WorkDaysActivity extends Activity {
                 TextView specDoctor = (TextView)findViewById(R.id.specializationDoctor);
                 specDoctor.setText(doctor.getSpecialization());
                 WorkDayAdapter adapter = new WorkDayAdapter(WorkDaysActivity.this, workDays);
-                ListView listView = (ListView) findViewById(R.id.lvDepartments);
+                ListView listView = (ListView) findViewById(R.id.lvWorkDays);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> view, View v, int position,long id){
+
+                        WorkDay selectedWorkDay = (WorkDay) view.getItemAtPosition(position);
+                        Intent intent = new Intent(WorkDaysActivity.this, TicketsActivity.class);
+                        intent.putExtra("department", department);
+                        intent.putExtra("doctor", doctor);
+                        intent.putExtra("workDay", selectedWorkDay);
+                        startActivity(intent);
+                    }
+
+                });
                 listView.setAdapter(adapter);
                 TextView emptyText = (TextView)findViewById(R.id.textCenter);
                 emptyText.setText("На данной неделе талонов нет. Выберите другую неделю.");
@@ -94,7 +110,7 @@ public class WorkDaysActivity extends Activity {
 
                 Button nextWeek = (Button) findViewById(R.id.nextWeek);
                 nextWeek.setText("След.");
-                if (weekNumber==Constants.MAX_WEEK_NUMBER){
+                if (weekNumber== Constants.MAX_WEEK_NUMBER){
                     nextWeek.setEnabled(false);
                 }
                 nextWeek.setOnClickListener(new View.OnClickListener() {

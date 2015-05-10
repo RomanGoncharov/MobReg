@@ -12,7 +12,7 @@
                  android:icon="@drawable/ic_launcher"
                  android:theme="@style/AppTheme">
 
-                <activity android:name=".SelectRegionActivity"
+                <activity android:name=".activities.SelectRegionActivity"
                           android:label="@string/app_name" >
                     <intent-filter>
                         <action android:name="android.intent.action.MAIN" />
@@ -20,24 +20,32 @@
                     </intent-filter>
                 </activity>
 
-                <activity android:name=".RegionsActivity"
+                <activity android:name=".activities.RegionsActivity"
                           android:label="@string/title_regions_activity" >
                 </activity>
 
-                <activity android:name=".HospitalsActivity"
+                <activity android:name=".activities.HospitalsActivity"
                                      android:label="@string/title_hospitals_activity" >
                 </activity>
 
-                <activity android:name=".DepartmentsActivity"
+                <activity android:name=".activities.DepartmentsActivity"
                           android:label="@string/title_departments_activity" >
                 </activity>
 
-                <activity android:name=".DoctorsActivity"
+                <activity android:name=".activities.DoctorsActivity"
                           android:label="@string/title_doctors_activity" >
                 </activity>
 
-                <activity android:name=".WorkDaysActivity"
+                <activity android:name=".activities.WorkDaysActivity"
                           android:label="@string/title_work_days_activity" >
+                </activity>
+
+                <activity android:name=".activities.TicketsActivity"
+                          android:label="@string/title_tickets_activity" >
+                </activity>
+
+                <activity android:name=".activities.TakeTicketActivity"
+                          android:label="@string/title_take_ticket_activity" >
                 </activity>
 
     </application>
