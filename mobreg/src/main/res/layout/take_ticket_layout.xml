@@ -9,6 +9,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
+            android:maxLength="16"
             android:hint="@string/hint_policy"
             android:id="@+id/policy_field"
             android:layout_margin="20dp"
