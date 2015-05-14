@@ -3,10 +3,25 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+    <EditText
+            android:id="@+id/search"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_text"
+            android:padding="15dp">
+
+    </EditText>
+
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lvHospitals">
 
     </ListView>
+    <TextView
+            android:id="@+id/textCenter"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            />
 </LinearLayout>

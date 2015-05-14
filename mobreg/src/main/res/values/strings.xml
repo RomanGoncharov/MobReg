@@ -19,4 +19,8 @@
     \nПолис старого образца: вводить только 6 знаков номера без серии (например: 123456)</string>
     <string name="continue_text">Продолжить</string>
 
+    <string name="error_net_message">При загрузке данных произошла ошибка. Проверьте ваше подключение к сети.</string>
+    <string name="reload_message">Попробовать снова</string>
+
+    <string name="search_text">Поиск...</string>
 </resources>

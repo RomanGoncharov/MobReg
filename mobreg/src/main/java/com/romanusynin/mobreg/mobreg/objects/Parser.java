@@ -228,7 +228,8 @@ public class Parser {
             ArrayList <Ticket> ticketsArrayList = new ArrayList<Ticket>();
             Elements ticketsElements = doc.select(".green_button_time");
             for (int i=0;i<ticketsElements.size(); i++) {
-                String url = urlWorkday+"/"+ticketsElements.get(i).select(".id");
+                String formatedUrlWorkday = urlWorkday.substring(0,14)+"6"+ urlWorkday.substring(15, urlWorkday.length());
+                String url = formatedUrlWorkday+"/"+ticketsElements.get(i).select(".id").text();
                 String time = ticketsElements.get(i).select("span").get(0).text();
                 Ticket ticket = new Ticket(time, url);
                 ticketsArrayList.add(ticket);
@@ -245,5 +246,12 @@ public class Parser {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String parseResponse(String html){
+        Document doc = Jsoup.parse(html);
+        String error_message = doc.select("#for_auth_user").select(".title_popup_red").get(0).text();
+        boolean success = false;
+        return error_message;
     }
 }
