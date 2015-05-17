@@ -29,27 +29,21 @@ public class DepartmentsActivity extends Activity {
         setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
         hospital = (Hospital) intent.getExtras().getSerializable("hospital");
-        String hospital_url = hospital.getUrl();
-        MyTask task = new MyTask();
-        task.execute(hospital_url);
+        GetListDepartment task = new GetListDepartment();
+        task.execute(hospital);
     }
 
-    class MyTask extends AsyncTask<String, Void, Void> {
-
-        ArrayList<Department> departments;
+    class GetListDepartment extends AsyncTask<Hospital,  ArrayList<Department>,  ArrayList<Department>> {
 
         @Override
-        protected Void doInBackground(String... params) {
-            departments = Parser.getDepartments(params[0]);
-            String phone = Parser.getHospitalPhone(params[0]);
-            hospital.setNumberPhone(phone);
-            return null;
+        protected  ArrayList<Department> doInBackground(Hospital... params) {
+            return Parser.getDepartmentsList(params[0]);
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            if (this.departments == null){
+        protected void onPostExecute( ArrayList<Department> departments) {
+            super.onPostExecute(departments);
+            if (departments == null){
                 setContentView(R.layout.error_net_layout);
             }
             else {
@@ -73,7 +67,7 @@ public class DepartmentsActivity extends Activity {
                     callNumber.setVisibility(View.GONE);
                 }
             }
-            DepartmentAdapter adapter = new DepartmentAdapter(DepartmentsActivity.this, this.departments);
+            DepartmentAdapter adapter = new DepartmentAdapter(DepartmentsActivity.this, departments);
             ListView listView = (ListView) findViewById(R.id.lvDepartments);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

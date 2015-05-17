@@ -46,13 +46,18 @@
                           android:launchMode="singleTop">
                 </activity>
 
-                <activity android:name=".activities.TicketsActivity"
+                <activity android:name=".activities.WorkTimesActivity"
                           android:label="@string/title_tickets_activity"
                           android:launchMode="singleTop">
                 </activity>
 
-                <activity android:name=".activities.TakeTicketActivity"
+                <activity android:name=".activities.AuthActivity"
                           android:label="@string/title_take_ticket_activity"
+                          android:launchMode="singleTop">
+                </activity>
+
+                <activity android:name=".activities.SuccessActivity"
+                          android:label="@string/title_success_activity"
                           android:launchMode="singleTop">
                 </activity>
 

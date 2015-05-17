@@ -7,24 +7,24 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.romanusynin.mobreg.mobreg.R;
-import com.romanusynin.mobreg.mobreg.objects.Ticket;
+import com.romanusynin.mobreg.mobreg.objects.WorkTime;
 
 import java.util.ArrayList;
 
-public class TicketAdapter extends ArrayAdapter<Ticket> {
+public class WorkTimeAdapter extends ArrayAdapter<WorkTime> {
 
-    public TicketAdapter(Context context, ArrayList<Ticket> tickets) {
-        super(context, 0, tickets);
+    public WorkTimeAdapter(Context context, ArrayList<WorkTime> workTimes) {
+        super(context, 0, workTimes);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Ticket ticket = getItem(position);
+        WorkTime workTime = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.ticket_item_lv, parent, false);
         }
         TextView tvTime = (TextView) convertView.findViewById(R.id.ticketTime);
-        tvTime.setText(ticket.getTime());
+        tvTime.setText(workTime.getTime());
         return convertView;
     }
 

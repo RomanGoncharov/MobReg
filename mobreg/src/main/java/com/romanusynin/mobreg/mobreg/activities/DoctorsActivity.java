@@ -25,33 +25,29 @@ public class DoctorsActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
-        this.department= (Department) intent.getExtras().getSerializable("department");
-        String departmentUrl = department.getUrl();
-        MyTask task = new MyTask();
-        task.execute(departmentUrl);
+        department = (Department) intent.getExtras().getSerializable("department");
+        GetDoctorsList task = new GetDoctorsList();
+        task.execute(department);
     }
 
-    class MyTask extends AsyncTask<String, Void, Void> {
-
-        ArrayList<Doctor> doctors;
+    class GetDoctorsList extends AsyncTask<Department, ArrayList<Doctor>, ArrayList<Doctor>> {
 
         @Override
-        protected Void doInBackground(String... params) {
-            doctors = Parser.getDoctors(params[0]);
-            return null;
+        protected ArrayList<Doctor> doInBackground(Department... params) {
+            return Parser.getDoctors(params[0]);
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            if (this.doctors == null){
+        protected void onPostExecute(ArrayList<Doctor> results) {
+            super.onPostExecute(results);
+            if (results== null){
                 setContentView(R.layout.error_net_layout);
             }
             else {
                 setContentView(R.layout.doctors_layout);
                 TextView nameDepartment = (TextView)findViewById(R.id.nameDepartment);
                 nameDepartment.setText(department.getName());
-                DoctorAdapter adapter = new DoctorAdapter(DoctorsActivity.this, this.doctors);
+                DoctorAdapter adapter = new DoctorAdapter(DoctorsActivity.this, results);
                 ListView listView = (ListView) findViewById(R.id.lvDepartments);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -60,7 +56,6 @@ public class DoctorsActivity extends Activity{
 
                         Doctor selectedDoctor = (Doctor) view.getItemAtPosition(position);
                         Intent intent = new Intent(DoctorsActivity.this, WorkDaysActivity.class);
-                        intent.putExtra("department", department);
                         intent.putExtra("doctor", selectedDoctor);
                         startActivity(intent);
                     }

@@ -4,11 +4,13 @@ package com.romanusynin.mobreg.mobreg.objects;
 import java.io.Serializable;
 
 public class Department implements Serializable {
+    Hospital hospital;
     String name;
     String url;
     String countTickets;
 
-    public Department(String name, String url, String countTickets) {
+    public Department(Hospital hospital, String name, String url, String countTickets) {
+        this.hospital = hospital;
         this.name = name;
         this.countTickets = countTickets;
         this.url = url;
@@ -36,5 +38,9 @@ public class Department implements Serializable {
 
     public String getCountTickets() {
         return countTickets;
+    }
+
+    public Region getRegion(){
+        return hospital.getRegion();
     }
 }

@@ -10,6 +10,7 @@
     <string name="title_work_days_activity">Выберите дату</string>
     <string name="title_tickets_activity">Выберите время приёма</string>
     <string name="title_take_ticket_activity">Введите ваши данные</string>
+    <string name="title_success_activity">Успех</string>
 
 
     <string name="hint_policy">Номер полиса</string>
@@ -23,4 +24,7 @@
     <string name="reload_message">Попробовать снова</string>
 
     <string name="search_text">Поиск...</string>
+
+    <string name="success_message">Вы успешно записались на приём</string>
+    <string name="back_to_main">Вернуться в главное меню</string>
 </resources>

@@ -7,7 +7,7 @@ public class Region implements Serializable {
     private String url;
     private String countHospital;
 
-    Region(String name, String url, String countHospital){
+    public Region(String name, String url, String countHospital){
         this.name = name;
         this.url = url;
         this.countHospital = countHospital;

@@ -14,12 +14,13 @@ import com.romanusynin.mobreg.mobreg.objects.Constants;
 import com.romanusynin.mobreg.mobreg.objects.Hospital;
 import com.romanusynin.mobreg.mobreg.objects.Parser;
 import com.romanusynin.mobreg.mobreg.objects.Region;
+import com.squareup.okhttp.Response;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class HospitalsActivity extends Activity {
-    private String region_url;
+    private Region region;
     private HospitalAdapter adapter;
     private EditText editsearch;
 
@@ -29,21 +30,21 @@ public class HospitalsActivity extends Activity {
         setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
         try {
-            Region region = (Region) intent.getExtras().getSerializable("region");
-            region_url = region.getUrl();
+            region = (Region) intent.getExtras().getSerializable("region");
         }
         catch (NullPointerException e){
-            region_url = Constants.OMSK_URL;
+            String nameRegion = "город Омск";
+            region = new Region(nameRegion, Constants.OMSK_URL, null);
         }
         GetHospitalsListTask task = new GetHospitalsListTask();
-        task.execute(region_url);
+        task.execute(region);
     }
 
-    class GetHospitalsListTask extends AsyncTask<String, ArrayList<Hospital>, ArrayList<Hospital>> {
+    class GetHospitalsListTask extends AsyncTask<Region, ArrayList<Hospital>, ArrayList<Hospital>> {
 
 
         @Override
-        protected ArrayList<Hospital> doInBackground(String... params) {
+        protected ArrayList<Hospital> doInBackground(Region... params) {
             return Parser.getHospitals(params[0]);
         }
 
@@ -58,7 +59,7 @@ public class HospitalsActivity extends Activity {
                     public void onClick(View v) {
                         setContentView(R.layout.loading_layout);
                         GetHospitalsListTask task = new GetHospitalsListTask();
-                        task.execute(region_url);
+                        task.execute(region);
                     }
                 });
             }

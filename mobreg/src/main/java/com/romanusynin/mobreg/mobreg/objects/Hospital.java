@@ -4,12 +4,14 @@ package com.romanusynin.mobreg.mobreg.objects;
 import java.io.Serializable;
 
 public class Hospital implements Serializable {
+    private Region region;
     private String name;
     private String url;
     private String address;
     private String numberPhone;
 
-    Hospital(String name, String url, String address){
+    Hospital(Region region, String name, String url, String address){
+        this.region = region;
         this.name = name;
         this.url = url;
         this.address = address;
@@ -47,4 +49,13 @@ public class Hospital implements Serializable {
     public String getUrl() {
         return url;
     }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
 }

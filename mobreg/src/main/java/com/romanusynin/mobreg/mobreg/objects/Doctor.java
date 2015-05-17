@@ -3,13 +3,15 @@ package com.romanusynin.mobreg.mobreg.objects;
 import java.io.Serializable;
 
 public class Doctor implements Serializable{
+    private Department department;
     private String name;
     private String office;
     private String sector;
     private String specialization;
     private String id;
 
-    public Doctor(String name, String office, String sector, String specialization, String id) {
+    public Doctor(Department department, String name, String office, String sector, String specialization, String id) {
+        this.department = department;
         this.name = name;
         this.office = office;
         this.sector = sector;
@@ -55,5 +57,21 @@ public class Doctor implements Serializable{
 
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Region getRegion(){
+       return department.getRegion();
+    }
+
+    public Hospital getHospital(){
+        return department.hospital;
     }
 }

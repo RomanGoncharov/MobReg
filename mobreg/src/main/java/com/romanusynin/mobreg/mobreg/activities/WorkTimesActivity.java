@@ -16,27 +16,20 @@ import com.romanusynin.mobreg.mobreg.objects.*;
 
 import java.util.ArrayList;
 
-public class TicketsActivity extends Activity{
+public class WorkTimesActivity extends Activity{
 
-    private Department department;
-    private Doctor doctor;
     private WorkDay workDay;
-    private String prevWorkDayUrl;
-    private String nextWorkDayUrl;
-    private String currentDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
-        department = (Department) intent.getExtras().getSerializable("department");
-        doctor = (Doctor) intent.getExtras().getSerializable("doctor");
         workDay = (WorkDay) intent.getExtras().getSerializable("workDay");
-        new GetListTicketsTask().execute(workDay.getUrl());
+        new GetListTicketsTask().execute(workDay);
     }
 
-    class GetListTicketsTask extends AsyncTask<String, Void, Parser.TicketsAndWorkdaysUrlsObject> {
+    class GetListTicketsTask extends AsyncTask<WorkDay, Void, Parser.WorkTimesListAndCookieObject> {
 
         @Override
         protected void onPreExecute() {
@@ -45,38 +38,37 @@ public class TicketsActivity extends Activity{
         }
 
         @Override
-        protected Parser.TicketsAndWorkdaysUrlsObject doInBackground(String... params) {
-            return Parser.getTicketsAndWorkdays(params[0]);
+        protected Parser.WorkTimesListAndCookieObject doInBackground(WorkDay... params) {
+            return Parser.getWorkDateTimes(params[0]);
         }
 
         @Override
-        protected void onPostExecute(Parser.TicketsAndWorkdaysUrlsObject ticketsAndWorkdaysUrls) {
-            super.onPostExecute(ticketsAndWorkdaysUrls);
-            if (ticketsAndWorkdaysUrls == null){
+        protected void onPostExecute(final Parser.WorkTimesListAndCookieObject workTimesAndWorkdaysUrls) {
+            super.onPostExecute(workTimesAndWorkdaysUrls);
+            if (workTimesAndWorkdaysUrls == null){
                 setContentView(R.layout.error_net_layout);
             }
             else {
-                ArrayList<Ticket> tickets = ticketsAndWorkdaysUrls.getTickets();
-                prevWorkDayUrl = ticketsAndWorkdaysUrls.getPrevWorkDayUrl();
-                nextWorkDayUrl = ticketsAndWorkdaysUrls.getNextWorkDayUrl();
-                currentDate = ticketsAndWorkdaysUrls.getCurrentDate();
+                ArrayList<WorkTime> workTimes = workTimesAndWorkdaysUrls.getWorkTimes();
+                String prevWorkDayUrl = workDay.getPrevWorkDayUrl();
+                String nextWorkDayUrl = workDay.getNextWorkDayUrl();
+                String currentDate = workDay.getDate();
                 setContentView(R.layout.tickets_layout);
                 TextView nameDoctor = (TextView)findViewById(R.id.nameDoctor);
-                nameDoctor.setText(doctor.getName());
+                nameDoctor.setText(workDay.getDoctorName());
                 TextView specDoctor = (TextView)findViewById(R.id.specializationDoctor);
-                specDoctor.setText(doctor.getSpecialization());
-                TicketAdapter adapter = new TicketAdapter(TicketsActivity.this, tickets);
+                specDoctor.setText(workDay.getDoctorSpec());
+                WorkTimeAdapter adapter = new WorkTimeAdapter(WorkTimesActivity.this, workTimes);
                 ListView listView = (ListView) findViewById(R.id.lvTickets);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
                     public void onItemClick(AdapterView<?> view, View v, int position,long id){
 
-                        Ticket selectedTicket = (Ticket) view.getItemAtPosition(position);
-                        Intent intent = new Intent(TicketsActivity.this, TakeTicketActivity.class);
-                        intent.putExtra("department", department);
-                        intent.putExtra("doctor", doctor);
-                        intent.putExtra("ticket", selectedTicket);
+                        WorkTime selectedWorkTime = (WorkTime) view.getItemAtPosition(position);
+                        Intent intent = new Intent(WorkTimesActivity.this, AuthActivity.class);
+                        intent.putExtra("workTime", selectedWorkTime);
+                        intent.putExtra("cookie", workTimesAndWorkdaysUrls.getCookie());
                         startActivity(intent);
                     }
 
@@ -95,7 +87,7 @@ public class TicketsActivity extends Activity{
 
                     @Override
                     public void onClick(View arg0) {;
-                        TicketsActivity.this.new GetListTicketsTask().execute(prevWorkDayUrl);
+                        WorkTimesActivity.this.new GetListTicketsTask().execute(workDay);
                     }
                 });
 
@@ -108,7 +100,7 @@ public class TicketsActivity extends Activity{
 
                     @Override
                     public void onClick(View arg0) {
-                        TicketsActivity.this.new GetListTicketsTask().execute(nextWorkDayUrl);
+                        WorkTimesActivity.this.new GetListTicketsTask().execute(workDay);
                     }
                 });
 

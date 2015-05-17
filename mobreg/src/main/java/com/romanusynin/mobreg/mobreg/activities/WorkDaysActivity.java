@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 public class WorkDaysActivity extends Activity {
 
-    private Department department;
     private Doctor doctor;
     private int weekNumber=1;
 
@@ -27,25 +26,11 @@ public class WorkDaysActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
-        department = (Department) intent.getExtras().getSerializable("department");
         doctor = (Doctor) intent.getExtras().getSerializable("doctor");
-        MyTaskParams paramsTask = new MyTaskParams(department.getUrl(), doctor, weekNumber);
-        new GetListWorkDaysTask().execute(paramsTask);
+        new GetListWorkDaysTask().execute(doctor);
     }
 
-    private static class MyTaskParams {
-        String url;
-        Doctor doctor;
-        int weekNumber;
-
-        MyTaskParams(String url, Doctor doctor, int weekNumber) {
-            this.doctor = doctor;
-            this.url = url;
-            this.weekNumber = weekNumber;
-        }
-    }
-
-    class GetListWorkDaysTask extends AsyncTask<MyTaskParams, Void, Parser.WorkDaysAndWeek> {
+    class GetListWorkDaysTask extends AsyncTask<Doctor, Void, Parser.WorkDaysAndWeek> {
 
         @Override
         protected void onPreExecute() {
@@ -54,8 +39,8 @@ public class WorkDaysActivity extends Activity {
         }
 
         @Override
-        protected Parser.WorkDaysAndWeek doInBackground(MyTaskParams... params) {
-            return Parser.getWorkDaysAndWeek(params[0].url, params[0].doctor, params[0].weekNumber);
+        protected Parser.WorkDaysAndWeek doInBackground(Doctor... params) {
+            return Parser.getWorkDaysAndWeek(params[0],weekNumber);
         }
 
         @Override
@@ -80,8 +65,7 @@ public class WorkDaysActivity extends Activity {
                     public void onItemClick(AdapterView<?> view, View v, int position,long id){
 
                         WorkDay selectedWorkDay = (WorkDay) view.getItemAtPosition(position);
-                        Intent intent = new Intent(WorkDaysActivity.this, TicketsActivity.class);
-                        intent.putExtra("department", department);
+                        Intent intent = new Intent(WorkDaysActivity.this, WorkTimesActivity.class);
                         intent.putExtra("doctor", doctor);
                         intent.putExtra("workDay", selectedWorkDay);
                         startActivity(intent);
@@ -103,8 +87,7 @@ public class WorkDaysActivity extends Activity {
                     @Override
                     public void onClick(View arg0) {
                         weekNumber--;
-                        MyTaskParams paramsTask = new MyTaskParams(department.getUrl(), doctor, weekNumber);
-                        WorkDaysActivity.this.new GetListWorkDaysTask().execute(paramsTask);
+                        WorkDaysActivity.this.new GetListWorkDaysTask().execute(doctor);
                     }
                 });
 
@@ -118,8 +101,7 @@ public class WorkDaysActivity extends Activity {
                     @Override
                     public void onClick(View arg0) {
                         weekNumber++;
-                        MyTaskParams paramsTask = new MyTaskParams(department.getUrl(), doctor, weekNumber);
-                        WorkDaysActivity.this.new GetListWorkDaysTask().execute(paramsTask);
+                        WorkDaysActivity.this.new GetListWorkDaysTask().execute(doctor);
                     }
                 });
 
