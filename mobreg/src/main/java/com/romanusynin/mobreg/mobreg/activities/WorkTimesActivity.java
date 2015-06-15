@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class WorkTimesActivity extends Activity{
 
     private WorkDay workDay;
+    private int flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class WorkTimesActivity extends Activity{
         setContentView(R.layout.loading_layout);
         Intent intent = getIntent();
         workDay = (WorkDay) intent.getExtras().getSerializable("workDay");
+        flag = 0;
         new GetListTicketsTask().execute(workDay);
     }
 
@@ -39,7 +41,7 @@ public class WorkTimesActivity extends Activity{
 
         @Override
         protected Parser.WorkTimesListAndCookieObject doInBackground(WorkDay... params) {
-            return Parser.getWorkDateTimes(params[0]);
+            return Parser.getWorkDateTimes(params[0], flag);
         }
 
         @Override
@@ -87,6 +89,7 @@ public class WorkTimesActivity extends Activity{
 
                     @Override
                     public void onClick(View arg0) {;
+                        flag = 1;
                         WorkTimesActivity.this.new GetListTicketsTask().execute(workDay);
                     }
                 });
@@ -100,6 +103,7 @@ public class WorkTimesActivity extends Activity{
 
                     @Override
                     public void onClick(View arg0) {
+                        flag = 2;
                         WorkTimesActivity.this.new GetListTicketsTask().execute(workDay);
                     }
                 });

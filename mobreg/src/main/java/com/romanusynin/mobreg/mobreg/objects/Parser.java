@@ -252,9 +252,19 @@ public class Parser {
 
     }
 
-    public static WorkTimesListAndCookieObject getWorkDateTimes(WorkDay workDay){
+    public static WorkTimesListAndCookieObject getWorkDateTimes(WorkDay workDay, int flag){ // flag 0 - none, 1-prev , 2-next
         try {
-            Connection.Response res = Jsoup.connect(Constants.DOMAIN + workDay.getUrl()).timeout(Constants.TIMEOUT).execute();
+            String workDayUrl;
+            if (flag ==0){
+                workDayUrl =  workDay.getUrl();
+            }
+            else if (flag == 1){
+                workDayUrl = workDay.getPrevWorkDayUrl();
+            }
+            else{
+                workDayUrl = workDay.getNextWorkDayUrl();
+            }
+            Connection.Response res = Jsoup.connect(Constants.DOMAIN + workDayUrl).timeout(Constants.TIMEOUT).execute();
             String cookie = "PHPSESSID="+res.cookies().get("PHPSESSID");
             Document doc = res.parse();
             ArrayList <WorkTime> ticketsArrayList = new ArrayList<WorkTime>();

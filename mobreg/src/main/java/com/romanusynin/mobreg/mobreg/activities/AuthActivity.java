@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -23,17 +24,20 @@ public class AuthActivity extends Activity{
     private EditText numberPolicyField;
     private EditText dateBirthField;
     private String cookie;
+    private SharedPreferences sPref;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sPref = getPreferences(MODE_PRIVATE);
         setContentView(R.layout.take_ticket_layout);
         Intent intent = getIntent();
         workTime = (WorkTime) intent.getExtras().getSerializable("workTime");
         cookie = intent.getExtras().getString("cookie");
 
         numberPolicyField = (EditText) findViewById(R.id.policy_field);
+        numberPolicyField.setText(sPref.getString("N_POLISA", ""));
         numberPolicyField.addTextChangedListener(new TextValidator(numberPolicyField) {
             @Override
             public void validate(EditText editText, String text) {
@@ -56,6 +60,7 @@ public class AuthActivity extends Activity{
         });
 
         dateBirthField = (EditText) findViewById(R.id.date_birth_field);
+        dateBirthField.setText(sPref.getString("BIRTHDAY", ""));
         dateBirthField.addTextChangedListener(new TextValidator(dateBirthField) {
             @Override
             public void validate(EditText editText, String text) {
@@ -73,7 +78,7 @@ public class AuthActivity extends Activity{
         });
 
         continueButton = (Button) findViewById(R.id.continueButton);
-        continueButton.setEnabled(false);
+        //continueButton.setEnabled(false);
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +113,10 @@ public class AuthActivity extends Activity{
         protected void onPostExecute(Parser.ResponseObject responseObject) {
             super.onPostExecute(responseObject);
             if (responseObject.isSuccess()){
+                SharedPreferences.Editor editor = sPref.edit();
+                editor.putString("N_POLISA", numberPolicyField.getText().toString());
+                editor.putString("BIRTHDAY", dateBirthField.getText().toString());
+                editor.apply();
                 Intent intent = new Intent(AuthActivity.this, SuccessActivity.class);
                 intent.putExtra("currentTime", workTime);
               //  intent.putExtra("tickets", responseObject.getTickets());
