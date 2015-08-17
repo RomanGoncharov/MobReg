@@ -23,6 +23,10 @@ public class Account implements Serializable {
     @DatabaseField
     private boolean isSelected;
 
+    public long getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }

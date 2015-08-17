@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -24,7 +24,9 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.romanusynin.mobreg.mobreg.R;
 import com.romanusynin.mobreg.mobreg.activities.AddOrEditAccountActivity;
+import com.romanusynin.mobreg.mobreg.activities.DoctorsActivity;
 import com.romanusynin.mobreg.mobreg.objects.Account;
+import com.romanusynin.mobreg.mobreg.objects.Department;
 import com.romanusynin.mobreg.mobreg.objects.HelperFactory;
 
 import java.sql.SQLException;
@@ -39,6 +41,15 @@ public class AccountListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.accounts_fragment, parent, false);
+
+        try {
+            accounts = (ArrayList<Account>) HelperFactory.getHelper().getAccountDAO().getAllAccount();
+        }
+        catch (SQLException e){
+            Log.e(TAG, e.toString());
+        }
+        adapter = new AccountAdapter(accounts);
+
         FloatingActionButton addAccountButton = (FloatingActionButton) v.findViewById(R.id.addAccountButton);
         addAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +61,37 @@ public class AccountListFragment extends Fragment {
         listView = (SwipeMenuListView) v.findViewById(R.id.accountsListView);
         listView.setAdapter(adapter);
         listView.setEmptyView(v.findViewById(R.id.accountListEmptyText));
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> view, View v, int position, long id) {
+                Account selectedAccount = (Account) view.getItemAtPosition(position);
+                for (Account a : accounts) {
+                    boolean isChanged = false;
+                    if(a.getId() != selectedAccount.getId()){
+                        if(a.isSelected()){
+                            a.setIsSelected(false);
+                            isChanged = true;
+                        }
+                    }
+                    else{
+                        a.setIsSelected(true);
+                        isChanged = true;
+                    }
+                    if (isChanged){
+                        try {
+                            HelperFactory.getHelper().getAccountDAO().update(a);
+                        }
+                        catch (SQLException e){
+                            Log.e(TAG, e.toString());
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+        });
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
@@ -103,20 +145,6 @@ public class AccountListFragment extends Fragment {
         return v;
     }
 
-    @Override
-    public  void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.accounts_title);
-
-        try {
-            accounts = (ArrayList<Account>) HelperFactory.getHelper().getAccountDAO().getAllAccount();
-        }
-        catch (SQLException e){
-            Log.e(TAG, e.toString());
-        }
-        adapter = new AccountAdapter(accounts);
-    }
-
     private class AccountAdapter extends ArrayAdapter<Account> {
 
         public AccountAdapter(ArrayList<Account> accounts) {
@@ -127,12 +155,14 @@ public class AccountListFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             Account account = getItem(position);
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_listview, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.account_list_item, parent, false);
             }
             TextView tvTitle = (TextView) convertView.findViewById(R.id.text1);
-            TextView tvSelected = (TextView) convertView.findViewById(R.id.text2);
+            TextView tvNumberPolicy = (TextView) convertView.findViewById(R.id.text2);
+            CheckBox cBIsSelectedAccount = (CheckBox) convertView.findViewById(R.id.checkboxSelectedAccount);
+            cBIsSelectedAccount.setChecked(account.isSelected());
             tvTitle.setText(account.getTitle());
-            tvSelected.setText(Boolean.toString(account.isSelected()));
+            tvNumberPolicy.setText(account.getNumberPolicy());
             return convertView;
         }
     }
