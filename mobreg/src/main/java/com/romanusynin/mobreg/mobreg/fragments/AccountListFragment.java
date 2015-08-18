@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -159,8 +160,13 @@ public class AccountListFragment extends Fragment {
             }
             TextView tvTitle = (TextView) convertView.findViewById(R.id.text1);
             TextView tvNumberPolicy = (TextView) convertView.findViewById(R.id.text2);
-            CheckBox cBIsSelectedAccount = (CheckBox) convertView.findViewById(R.id.checkboxSelectedAccount);
-            cBIsSelectedAccount.setChecked(account.isSelected());
+            ImageView cBIsSelectedAccount = (ImageView) convertView.findViewById(R.id.checkboxSelectedAccount);
+            if (account.isSelected()) {
+                cBIsSelectedAccount.setImageResource(R.drawable.ic_star_black_36dp);
+            }
+            else{
+                cBIsSelectedAccount.setImageResource(R.drawable.ic_star_outline_black_36dp);
+            }
             tvTitle.setText(account.getTitle());
             tvNumberPolicy.setText(account.getNumberPolicy());
             return convertView;

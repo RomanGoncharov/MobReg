@@ -50,16 +50,16 @@
 
     </LinearLayout>
 
-    <CheckBox
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/checkboxSelectedAccount"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_margin="13dp"
-        android:button="@drawable/checkbox_account_selector"
         android:focusable="false"
         android:clickable="false"
-        android:elegantTextHeight="false" />
+        android:checked="true"
+        />
 
 </RelativeLayout>
