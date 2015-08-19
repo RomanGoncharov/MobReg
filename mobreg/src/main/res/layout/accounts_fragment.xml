@@ -5,26 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.baoyz.swipemenulistview.SwipeMenuListView
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/toolbar" />
+
+        <com.baoyz.swipemenulistview.SwipeMenuListView
             android:id="@+id/accountsListView"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <TextView
-            android:id="@+id/accountListEmptyText"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:text="@string/accounts_empty"/>
+        android:id="@+id/accountListEmptyText"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:text="@string/accounts_empty"/>
 
     <android.support.design.widget.FloatingActionButton
-            style="@style/floating_action_button"
-            android:id="@+id/addAccountButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:clickable="true"
-            android:src="@drawable/ic_add_white_18dp"
-            app:borderWidth="0dp"
-            />
+        style="@style/floating_action_button"
+        android:id="@+id/addAccountButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_18dp"
+        app:borderWidth="0dp"
+        />
 </FrameLayout>

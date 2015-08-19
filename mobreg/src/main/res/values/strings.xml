@@ -34,4 +34,6 @@
     <string name="add_account">Добавить аккаунт</string>
     <string name="hint_title">Название аккаунта</string>
 
+    <string name="help_title">Помощь</string>
+
 </resources>

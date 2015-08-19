@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.romanusynin.mobreg.mobreg.R;
 
-public abstract class SingleFragmentActivity extends AppCompatActivity {
+public abstract class SingleFragmentActivity extends AppCompatActivity  {
     protected abstract Fragment createFragment();
 
     @Override

@@ -8,14 +8,21 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,10 +31,9 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.romanusynin.mobreg.mobreg.R;
+import com.romanusynin.mobreg.mobreg.activities.AccountListActivity;
 import com.romanusynin.mobreg.mobreg.activities.AddOrEditAccountActivity;
-import com.romanusynin.mobreg.mobreg.activities.DoctorsActivity;
 import com.romanusynin.mobreg.mobreg.objects.Account;
-import com.romanusynin.mobreg.mobreg.objects.Department;
 import com.romanusynin.mobreg.mobreg.objects.HelperFactory;
 
 import java.sql.SQLException;
@@ -40,8 +46,44 @@ public class AccountListFragment extends Fragment {
     private AccountAdapter adapter;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_accounts_fragment, menu);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        searchView.setQueryHint(getString(R.string.search_text));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+//        MenuItemCompat.setOnActionExpandListener(sea);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.accounts_fragment, parent, false);
+
+        Toolbar toolbar = (Toolbar) v.findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.accounts_title));
+
+        AccountListActivity activity = ((AccountListActivity)getActivity());
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setIcon(R.drawable.ic_launcher);
 
         try {
             accounts = (ArrayList<Account>) HelperFactory.getHelper().getAccountDAO().getAllAccount();
@@ -59,6 +101,7 @@ public class AccountListFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
         listView = (SwipeMenuListView) v.findViewById(R.id.accountsListView);
         listView.setAdapter(adapter);
         listView.setEmptyView(v.findViewById(R.id.accountListEmptyText));
@@ -146,10 +189,23 @@ public class AccountListFragment extends Fragment {
         return v;
     }
 
+    public void onResume(){
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
     private class AccountAdapter extends ArrayAdapter<Account> {
+        private Filter accountsFilter;
 
         public AccountAdapter(ArrayList<Account> accounts) {
             super(getActivity(), 0, accounts);
+        }
+
+        @Override
+        public Filter getFilter() {
+            if (accountsFilter == null)
+                accountsFilter = new HospitalFilter<Account>(accounts);
+            return accountsFilter;
         }
 
         @Override
@@ -170,6 +226,53 @@ public class AccountListFragment extends Fragment {
             tvTitle.setText(account.getTitle());
             tvNumberPolicy.setText(account.getNumberPolicy());
             return convertView;
+        }
+
+        private class HospitalFilter<T> extends Filter {
+
+            private ArrayList<Account> sourceObjects;
+
+            public HospitalFilter(ArrayList<Account> accounts) {
+                sourceObjects = new ArrayList<Account>();
+                synchronized (this) {
+                    sourceObjects.addAll(accounts);
+                }
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence chars) {
+                String filterSeq = chars.toString().toLowerCase();
+                FilterResults result = new FilterResults();
+                if (filterSeq.length() > 0) {
+                    ArrayList<Account> filter = new ArrayList<Account>();
+
+                    for (Account account : sourceObjects) {
+                        if (account.getTitle().toLowerCase().contains(filterSeq) ||
+                                account.getNumberPolicy().toLowerCase().contains(filterSeq))
+                            filter.add(account);
+                    }
+                    result.count = filter.size();
+                    result.values = filter;
+                } else {
+                    synchronized (this) {
+                        result.values = sourceObjects;
+                        result.count = sourceObjects.size();
+                    }
+                }
+                return result;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                ArrayList<T> filtered = (ArrayList<T>) results.values;
+                notifyDataSetChanged();
+                clear();
+                for (int i = 0, l = filtered.size(); i < l; i++)
+                    add((Account) filtered.get(i));
+                notifyDataSetInvalidated();
+            }
         }
     }
 
