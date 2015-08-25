@@ -15,6 +15,5 @@
         android:title="@string/help_title"
         android:icon="@drawable/ic_help_white_36dp"
         mobregapp:showAsAction="always|collapseActionView"
-        mobregapp:queryHint="@string/search_text"
         />
 </menu>

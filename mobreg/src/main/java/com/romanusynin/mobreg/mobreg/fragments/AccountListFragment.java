@@ -1,7 +1,6 @@
 package com.romanusynin.mobreg.mobreg.fragments;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -19,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
@@ -31,8 +28,7 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.romanusynin.mobreg.mobreg.R;
-import com.romanusynin.mobreg.mobreg.activities.AccountListActivity;
-import com.romanusynin.mobreg.mobreg.activities.AddOrEditAccountActivity;
+import com.romanusynin.mobreg.mobreg.activities.AccountActivity;
 import com.romanusynin.mobreg.mobreg.objects.Account;
 import com.romanusynin.mobreg.mobreg.objects.HelperFactory;
 
@@ -69,7 +65,6 @@ public class AccountListFragment extends Fragment {
                 return true;
             }
         });
-//        MenuItemCompat.setOnActionExpandListener(sea);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -77,13 +72,6 @@ public class AccountListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.accounts_fragment, parent, false);
-
-        Toolbar toolbar = (Toolbar) v.findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.accounts_title));
-
-        AccountListActivity activity = ((AccountListActivity)getActivity());
-        activity.setSupportActionBar(toolbar);
-        activity.getSupportActionBar().setIcon(R.drawable.ic_launcher);
 
         try {
             accounts = (ArrayList<Account>) HelperFactory.getHelper().getAccountDAO().getAllAccount();
@@ -97,7 +85,7 @@ public class AccountListFragment extends Fragment {
         addAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddOrEditAccountActivity.class);
+                Intent intent = new Intent(getActivity(), AccountActivity.class);
                 startActivity(intent);
             }
         });
@@ -113,21 +101,19 @@ public class AccountListFragment extends Fragment {
                 Account selectedAccount = (Account) view.getItemAtPosition(position);
                 for (Account a : accounts) {
                     boolean isChanged = false;
-                    if(a.getId() != selectedAccount.getId()){
-                        if(a.isSelected()){
+                    if (a.getId() != selectedAccount.getId()) {
+                        if (a.isSelected()) {
                             a.setIsSelected(false);
                             isChanged = true;
                         }
-                    }
-                    else{
+                    } else {
                         a.setIsSelected(true);
                         isChanged = true;
                     }
-                    if (isChanged){
+                    if (isChanged) {
                         try {
                             HelperFactory.getHelper().getAccountDAO().update(a);
-                        }
-                        catch (SQLException e){
+                        } catch (SQLException e) {
                             Log.e(TAG, e.toString());
                         }
                     }
@@ -167,7 +153,7 @@ public class AccountListFragment extends Fragment {
                 Account a = adapter.getItem(position);
                 switch (index) {
                     case 0:
-                        Intent intent = new Intent(getActivity(), AddOrEditAccountActivity.class);
+                        Intent intent = new Intent(getActivity(), AccountActivity.class);
                         intent.putExtra("selectedAccount", a);
                         startActivity(intent);
                         break;
@@ -191,6 +177,14 @@ public class AccountListFragment extends Fragment {
 
     public void onResume(){
         super.onResume();
+
+        // Refresh listview!!!!!!
+        try {
+            accounts = (ArrayList<Account>) HelperFactory.getHelper().getAccountDAO().getAllAccount();
+        }
+        catch (SQLException e){
+            Log.e(TAG, e.toString());
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -204,7 +198,7 @@ public class AccountListFragment extends Fragment {
         @Override
         public Filter getFilter() {
             if (accountsFilter == null)
-                accountsFilter = new HospitalFilter<Account>(accounts);
+                accountsFilter = new AccountFilter<Account>(accounts);
             return accountsFilter;
         }
 
@@ -228,11 +222,11 @@ public class AccountListFragment extends Fragment {
             return convertView;
         }
 
-        private class HospitalFilter<T> extends Filter {
+        private class AccountFilter<T> extends Filter {
 
             private ArrayList<Account> sourceObjects;
 
-            public HospitalFilter(ArrayList<Account> accounts) {
+            public AccountFilter(ArrayList<Account> accounts) {
                 sourceObjects = new ArrayList<Account>();
                 synchronized (this) {
                     sourceObjects.addAll(accounts);
