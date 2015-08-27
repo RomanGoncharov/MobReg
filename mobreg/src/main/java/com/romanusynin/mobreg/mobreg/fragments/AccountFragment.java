@@ -16,16 +16,20 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.romanusynin.mobreg.mobreg.R;
+import com.romanusynin.mobreg.mobreg.TextValidator;
 import com.romanusynin.mobreg.mobreg.objects.Account;
 import com.romanusynin.mobreg.mobreg.objects.HelperFactory;
 
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AccountFragment extends Fragment{
     private Account account;
     private EditText titleField;
     private EditText numberPolicyField;
     private EditText dateBirthField;
+    private Button saveButton;
     private boolean isUpdateAccount;
     private static final String TAG = "AccountFragment";
 
@@ -69,7 +73,55 @@ public class AccountFragment extends Fragment{
         titleField.setText(account.getTitle());
         numberPolicyField.setText(account.getNumberPolicy());
         dateBirthField.setText(account.getDateBirth());
-        Button saveButton = (Button) v.findViewById(R.id.saveButton);
+        saveButton = (Button) v.findViewById(R.id.saveButton);
+        if (!isUpdateAccount) saveButton.setEnabled(false);
+
+        titleField.addTextChangedListener(new TextValidator(numberPolicyField) {
+            @Override
+            public void validate(EditText editText, String text) {
+                if (text.length() == 0) {
+                    editText.setError(getString(R.string.required_error));
+                }
+            }
+        });
+
+        numberPolicyField.addTextChangedListener(new TextValidator(numberPolicyField) {
+            @Override
+            public void validate(EditText editText, String text) {
+                int numberPolicyLength = text.length();
+                if (numberPolicyLength == 0) {
+                    editText.setError(getString(R.string.required_error));
+                    saveButton.setEnabled(false);
+                } else if (numberPolicyLength < 6) {
+                    editText.setError(getString(R.string.less_6_error));
+                    saveButton.setEnabled(false);
+                } else if (numberPolicyLength > 16) {
+                    editText.setError(getString(R.string.more_16_error));
+                    saveButton.setEnabled(false);
+                } else {
+                    editText.setError(null);
+                    if (dateBirthField.getError()==null && dateBirthField.getText().length() > 0)
+                        saveButton.setEnabled(true);
+                }
+            }
+        });
+
+        dateBirthField.addTextChangedListener(new TextValidator(dateBirthField) {
+            @Override
+            public void validate(EditText editText, String text) {
+                Pattern p = Pattern.compile("^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012])\\.(19|20)\\d\\d$");
+                Matcher m = p.matcher(text);
+                if (!m.matches()) {
+                    editText.setError("Введите дату в формате dd.mm.yyyy");
+                    saveButton.setEnabled(false);
+                } else {
+                    editText.setError(null);
+                    if (numberPolicyField.getError() == null && numberPolicyField.getText().length() > 0)
+                        saveButton.setEnabled(true);
+                }
+            }
+        });
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,12 +133,10 @@ public class AccountFragment extends Fragment{
                 try {
                     if (isUpdateAccount) {
                         HelperFactory.getHelper().getAccountDAO().update(account);
-                    }
-                    else {
+                    } else {
                         HelperFactory.getHelper().getAccountDAO().create(account);
                     }
-                }
-                catch (SQLException e){
+                } catch (SQLException e) {
                     Log.e(TAG, e.toString());
                 }
                 getActivity().finish();

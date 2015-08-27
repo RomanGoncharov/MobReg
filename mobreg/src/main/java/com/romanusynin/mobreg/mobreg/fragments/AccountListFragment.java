@@ -34,6 +34,7 @@ import com.romanusynin.mobreg.mobreg.objects.HelperFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class AccountListFragment extends Fragment {
     private ArrayList<Account> accounts= new ArrayList<Account>();
@@ -178,14 +179,15 @@ public class AccountListFragment extends Fragment {
     public void onResume(){
         super.onResume();
 
-        // Refresh listview!!!!!!
+        accounts.clear();
         try {
-            accounts = (ArrayList<Account>) HelperFactory.getHelper().getAccountDAO().getAllAccount();
+            accounts.addAll(HelperFactory.getHelper().getAccountDAO().getAllAccount());
         }
         catch (SQLException e){
             Log.e(TAG, e.toString());
         }
         adapter.notifyDataSetChanged();
+
     }
 
     private class AccountAdapter extends ArrayAdapter<Account> {

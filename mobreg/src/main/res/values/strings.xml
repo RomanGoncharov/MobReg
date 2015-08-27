@@ -38,4 +38,12 @@
 
     <string name="save_text">Сохранить</string>
 
+    <!-- Form errors start-->
+    <string name="required_error">Это поле обязательное</string>
+    <string name="less_6_error">Длина не должна быть меньше 6 цифр</string>
+    <string name="more_16_error">Длина не должна превышать 16 цифр</string>
+    <string name="date_format_error">Введите дату в формате dd.mm.yyyy</string>
+    <!-- Form errors end-->
+
+
 </resources>

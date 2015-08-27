@@ -22,7 +22,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity  {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (NavUtils.getParentActivityName(this) != null) {
-            toolbar.setNavigationIcon(R.drawable.flat_arrow);
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_arrow_48dp);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -31,7 +31,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity  {
             });
         }
         else{
-            getSupportActionBar().setIcon(R.drawable.ic_launcher_48dp);
+            getSupportActionBar().setIcon(R.drawable.ic_toolbar_48dp);
         }
 
         FragmentManager fm = getSupportFragmentManager();
