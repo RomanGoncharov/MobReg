@@ -3,3 +3,6 @@ local.properties
 .DS_Store
 /build
 .idea
+*.iml
+mobreg/mobreg.iml
+.idea/compiler.xml
