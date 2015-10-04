@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import com.romanusynin.mobreg.mobreg.fragments.AccountListFragment;
 
 
-public class AccountListActivity extends SingleFragmentActivity {
+public class AccountsActivity extends SingleFragmentActivity {
 
 
     @Override

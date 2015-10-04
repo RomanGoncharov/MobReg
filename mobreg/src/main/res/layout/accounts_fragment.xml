@@ -30,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
+        android:backgroundTint="@color/blue_800"
         android:clickable="true"
         android:src="@drawable/ic_add_white_18dp"
         app:borderWidth="0dp"

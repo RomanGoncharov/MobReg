@@ -1,12 +1,13 @@
 package com.romanusynin.mobreg.mobreg.fragments;
 
 
-import android.content.Intent;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -28,13 +29,12 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.romanusynin.mobreg.mobreg.R;
-import com.romanusynin.mobreg.mobreg.activities.AccountActivity;
 import com.romanusynin.mobreg.mobreg.objects.Account;
 import com.romanusynin.mobreg.mobreg.objects.HelperFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class AccountListFragment extends Fragment {
     private ArrayList<Account> accounts= new ArrayList<Account>();
@@ -42,8 +42,19 @@ public class AccountListFragment extends Fragment {
     private SwipeMenuListView listView;
     private AccountAdapter adapter;
 
+    private List<Account> getAllAccounts(){
+        try {
+            return HelperFactory.getHelper().getAccountDAO().getAllAccounts();
+        }
+        catch (SQLException e){
+            Log.e(TAG, e.toString());
+            return new ArrayList<Account>();
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        getActivity().setTitle(R.string.accounts_title);
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
@@ -74,32 +85,51 @@ public class AccountListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.accounts_fragment, parent, false);
 
-        try {
-            accounts = (ArrayList<Account>) HelperFactory.getHelper().getAccountDAO().getAllAccount();
-        }
-        catch (SQLException e){
-            Log.e(TAG, e.toString());
-        }
+        accounts = (ArrayList<Account>) getAllAccounts();
         adapter = new AccountAdapter(accounts);
 
         FloatingActionButton addAccountButton = (FloatingActionButton) v.findViewById(R.id.addAccountButton);
         addAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AccountActivity.class);
-                startActivity(intent);
+                Fragment frag_account_detail = new AccountFragment();
+                FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
+                fm.replace(R.id.fragmentContainer, frag_account_detail);
+                fm.addToBackStack("ADD_ACCOUNT");
+                fm.commit();
             }
         });
 
         listView = (SwipeMenuListView) v.findViewById(R.id.accountsListView);
+        View footerView =  ((LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.accounts_list_footer_layout, null, false);
+        listView.addFooterView(footerView);
         listView.setAdapter(adapter);
         listView.setEmptyView(v.findViewById(R.id.accountListEmptyText));
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> view, View v, int position, long id) {
                 Account selectedAccount = (Account) view.getItemAtPosition(position);
+                Account favorite_account_in_db = null;
+                try {
+                    favorite_account_in_db =HelperFactory.getHelper().getAccountDAO().getSelectedAccount();
+                } catch (SQLException e) {
+                    Log.e(TAG, e.toString());
+                }
+
+                //update in db
+                if (favorite_account_in_db != null && selectedAccount.getId() != favorite_account_in_db.getId()){
+                    try {
+                        favorite_account_in_db.setIsSelected(false);
+                        HelperFactory.getHelper().getAccountDAO().update(favorite_account_in_db);
+                    } catch (SQLException e) {
+                        Log.e(TAG, e.toString());
+                    }
+                }
+
+                //update in list
                 for (Account a : accounts) {
                     boolean isChanged = false;
                     if (a.getId() != selectedAccount.getId()) {
@@ -154,9 +184,15 @@ public class AccountListFragment extends Fragment {
                 Account a = adapter.getItem(position);
                 switch (index) {
                     case 0:
-                        Intent intent = new Intent(getActivity(), AccountActivity.class);
-                        intent.putExtra("selectedAccount", a);
-                        startActivity(intent);
+                        Fragment frag_account_detail = new AccountFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("selectedAccount", a);
+                        frag_account_detail.setArguments(bundle);
+                        FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
+                        fm.replace(R.id.fragmentContainer, frag_account_detail);
+                        fm.addToBackStack("ADD_ACCOUNT");
+                        fm.commit();
+
                         break;
                     case 1:
                         accounts.remove(position);
@@ -178,14 +214,10 @@ public class AccountListFragment extends Fragment {
 
     public void onResume(){
         super.onResume();
+        getActivity().setTitle(R.string.accounts_title);
 
         accounts.clear();
-        try {
-            accounts.addAll(HelperFactory.getHelper().getAccountDAO().getAllAccount());
-        }
-        catch (SQLException e){
-            Log.e(TAG, e.toString());
-        }
+        accounts.addAll(getAllAccounts());
         adapter.notifyDataSetChanged();
 
     }
@@ -200,7 +232,7 @@ public class AccountListFragment extends Fragment {
         @Override
         public Filter getFilter() {
             if (accountsFilter == null)
-                accountsFilter = new AccountFilter<Account>(accounts);
+                accountsFilter = new AccountFilter<Account>();
             return accountsFilter;
         }
 
@@ -226,15 +258,6 @@ public class AccountListFragment extends Fragment {
 
         private class AccountFilter<T> extends Filter {
 
-            private ArrayList<Account> sourceObjects;
-
-            public AccountFilter(ArrayList<Account> accounts) {
-                sourceObjects = new ArrayList<Account>();
-                synchronized (this) {
-                    sourceObjects.addAll(accounts);
-                }
-            }
-
             @Override
             protected FilterResults performFiltering(CharSequence chars) {
                 String filterSeq = chars.toString().toLowerCase();
@@ -242,7 +265,7 @@ public class AccountListFragment extends Fragment {
                 if (filterSeq.length() > 0) {
                     ArrayList<Account> filter = new ArrayList<Account>();
 
-                    for (Account account : sourceObjects) {
+                    for (Account account : getAllAccounts()) {
                         if (account.getTitle().toLowerCase().contains(filterSeq) ||
                                 account.getNumberPolicy().toLowerCase().contains(filterSeq))
                             filter.add(account);
@@ -251,8 +274,8 @@ public class AccountListFragment extends Fragment {
                     result.values = filter;
                 } else {
                     synchronized (this) {
-                        result.values = sourceObjects;
-                        result.count = sourceObjects.size();
+                        result.values = getAllAccounts();
+                        result.count = getAllAccounts().size();
                     }
                 }
                 return result;

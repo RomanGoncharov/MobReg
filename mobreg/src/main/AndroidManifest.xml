@@ -64,20 +64,13 @@
                           android:launchMode="singleTop">
                 </activity>
 
-                <activity android:name=".activities.AccountListActivity"
+                <activity android:name=".activities.AccountsActivity"
                           android:launchMode="singleTop"
                           android:label="@string/accounts_title">
                     <intent-filter>
                         <action android:name="android.intent.action.MAIN" />
                         <category android:name="android.intent.category.LAUNCHER" />
                     </intent-filter>
-                </activity>
-
-                <activity android:name=".activities.AccountActivity"
-                          android:label="@string/accounts_title"
-                          android:launchMode="singleTop">
-                    <meta-data android:name="android.support.PARENT_ACTIVITY"
-                               android:value=".activities.AccountListActivity"/>
                 </activity>
 
     </application>

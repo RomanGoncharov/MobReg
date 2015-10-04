@@ -1,7 +1,6 @@
 package com.romanusynin.mobreg.mobreg.fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -53,7 +52,7 @@ public class AccountFragment extends Fragment{
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
         try {
-            account = (Account) getActivity().getIntent().getExtras().getSerializable("selectedAccount");
+            account = (Account)getArguments().getSerializable("selectedAccount");
             getActivity().setTitle(account.getTitle());
             isUpdateAccount = true;
         }
@@ -139,7 +138,7 @@ public class AccountFragment extends Fragment{
                 } catch (SQLException e) {
                     Log.e(TAG, e.toString());
                 }
-                getActivity().finish();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
         return v;

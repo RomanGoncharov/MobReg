@@ -15,7 +15,17 @@ public class AccountDAO extends BaseDaoImpl<Account, Integer> {
         super(connectionSource, dataClass);
     }
 
-    public List<Account> getAllAccount() throws SQLException{
+    public List<Account> getAllAccounts() throws SQLException{
         return this.queryForAll();
+    }
+
+    public Account getSelectedAccount() throws SQLException{
+
+        for (Account account : this.queryForAll()) {
+            if (account.isSelected()) {
+                return account;
+            }
+        }
+        return null;
     }
 }
