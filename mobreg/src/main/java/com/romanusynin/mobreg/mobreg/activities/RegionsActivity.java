@@ -22,9 +22,6 @@ public class RegionsActivity extends Activity{
         setContentView(R.layout.loading_layout);
         MyTask task = new MyTask();
         task.execute();
-
-
-
     }
 
     class MyTask extends AsyncTask<Void, Void, Void> {
@@ -47,7 +44,6 @@ public class RegionsActivity extends Activity{
 
                 @Override
                 public void onItemClick(AdapterView<?> view, View v, int position,long id){
-
                     Region selectedRegion = (Region) view.getItemAtPosition(position);
                     Intent intent = new Intent(RegionsActivity.this, HospitalsActivity.class);
                     intent.putExtra("region", selectedRegion);
