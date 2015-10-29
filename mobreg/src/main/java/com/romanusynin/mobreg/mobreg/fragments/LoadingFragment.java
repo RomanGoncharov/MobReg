@@ -221,21 +221,25 @@ public class LoadingFragment extends Fragment {
                 if (remove) {
                     ft.remove(frag);
                 }
-                ft.replace(R.id.fragmentContainer, f);
+                ft.replace(R.id.listContainer, f);
                 ft.commit();
             } else {
-                Fragment f = new WorkDaysFragment();
+                Fragment f = new WorkDaysListFragment();
                 ArrayList<WorkDay> workDays = workDaysAndWeek.getWorkDays();
                 b.putSerializable("workdays", workDays);
                 b.putSerializable("week", workDaysAndWeek.getWeek());
                 b.putInt("weeknum", weeknum);
                 f.setArguments(b);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                if (remove) {
-                    ft.remove(frag);
+                try {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    if (remove) {
+                        ft.remove(frag);
+                    }
+                    ft.replace(R.id.listContainer, f);
+                    ft.commit();
+                }catch (NullPointerException e){
+                    e.printStackTrace();
                 }
-                ft.replace(R.id.fragmentContainer, f);
-                ft.commit();
             }
         }
     }
@@ -263,21 +267,25 @@ public class LoadingFragment extends Fragment {
                 if (remove) {
                     ft.remove(frag);
                 }
-                ft.replace(R.id.fragmentContainer, f);
+                ft.replace(R.id.listContainer, f);
                 ft.commit();
             } else {
-                Fragment f = new WorkTimesFragment();
+                Fragment f = new WorkTimesListFragment();
                 ArrayList<WorkTime> workTimes = workTimesAndWorkdaysUrls.getWorkTimes();
                 b.putSerializable("worktimes", workTimes);
                 b.putSerializable("cookie", workTimesAndWorkdaysUrls.getCookie());
                 b.putInt("weeknum", weeknum);
                 f.setArguments(b);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                if (remove) {
-                    ft.remove(frag);
+                try {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    if (remove) {
+                        ft.remove(frag);
+                    }
+                    ft.replace(R.id.listContainer, f);
+                    ft.commit();
+                }catch (NullPointerException e){
+                    e.printStackTrace();
                 }
-                ft.replace(R.id.fragmentContainer, f);
-                ft.commit();
             }
         }
     }

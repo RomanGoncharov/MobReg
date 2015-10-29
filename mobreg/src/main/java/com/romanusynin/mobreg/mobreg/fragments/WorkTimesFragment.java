@@ -20,61 +20,52 @@ import com.romanusynin.mobreg.mobreg.objects.WorkTime;
 import java.util.ArrayList;
 
 public class WorkTimesFragment extends Fragment {
-    private ArrayList<WorkTime> workTimes;
     private WorkDay workDay;
     private int flag;
-    private String cookie;
+    Button prevWorkDay;
+    Button nextWorkDay;
 
     @SuppressWarnings("unchecked")
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        workTimes = (ArrayList<WorkTime>)bundle.getSerializable("worktimes");
         workDay = (WorkDay) bundle.getSerializable("workday");
-        cookie = bundle.getString("cookie");
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.tickets_layout, parent, false);
         getActivity().setTitle(R.string.title_tickets_activity);
-        String prevWorkDayUrl = workDay.getPrevWorkDayUrl();
-        String nextWorkDayUrl = workDay.getNextWorkDayUrl();
         String currentDate = workDay.getDate();
         TextView nameDoctor = (TextView)v.findViewById(R.id.nameDoctor);
         nameDoctor.setText(workDay.getDoctorName());
         TextView specDoctor = (TextView)v.findViewById(R.id.specializationDoctor);
         specDoctor.setText(workDay.getDoctorSpec());
-        WorkTimeAdapter adapter = new WorkTimeAdapter(getActivity(), workTimes);
-        ListView listView = (ListView) v.findViewById(R.id.lvTickets);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> view, View v, int position,long id){
-                WorkTime selectedWorkTime = (WorkTime) view.getItemAtPosition(position);
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                Fragment f = new AuthFragment();
-                Bundle b = new Bundle();
-                b.putSerializable("worktime", selectedWorkTime);
-                b.putSerializable("cookie",cookie);
-                f.setArguments(b);
-                ft.replace(R.id.fragmentContainer, f);
-                ft.addToBackStack(null);
-                ft.commit();
-            }
-
-        });
-        listView.setAdapter(adapter);
-        TextView emptyText = (TextView)v.findViewById(R.id.textEmpty);
-        emptyText.setText("На данный день талонов нет. Выберите другой день.");
-        listView.setEmptyView(emptyText);
-
-        Button prevWorkDay = (Button) v.findViewById(R.id.prevWorkDay);
-        prevWorkDay.setText("Пред.");
-        if (prevWorkDayUrl==null){
-            prevWorkDay.setEnabled(false);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.listContainer);
+        if (fragment==null){
+            fragment = new LoadingFragment();
+            Bundle b = new Bundle();
+            b.putSerializable("id", LoadingFragment.TICKETS);
+            b.putSerializable("workday", workDay);
+            fragment.setArguments(b);
+            fm.beginTransaction()
+                    .add(R.id.listContainer, fragment)
+                    .commit();
+        }else {
+            fragment = new LoadingFragment();
+            Bundle b = new Bundle();
+            b.putSerializable("id", LoadingFragment.TICKETS);
+            b.putSerializable("workday", workDay);
+            fragment.setArguments(b);
+            fm.beginTransaction()
+                    .replace(R.id.listContainer, fragment)
+                    .commit();
         }
+
+
+        prevWorkDay = (Button) v.findViewById(R.id.prevWorkDay);
+        prevWorkDay.setText("Пред.");
         prevWorkDay.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -87,18 +78,15 @@ public class WorkTimesFragment extends Fragment {
                 b.putSerializable("id", LoadingFragment.TICKETS);
                 b.putSerializable("workday", workDay);
                 b.putSerializable("flag", flag);
-                b.putBoolean("needremove", true);
+                //b.putBoolean("needremove", true);
                 f.setArguments(b);
-                ft.add(R.id.fragmentContainer, f);
+                ft.replace(R.id.listContainer, f);
                 ft.commit();
             }
         });
 
-        Button nextWorkDay = (Button) v.findViewById(R.id.nextWorkDay);
+        nextWorkDay = (Button) v.findViewById(R.id.nextWorkDay);
         nextWorkDay.setText("След.");
-        if (nextWorkDayUrl == null){
-            nextWorkDay.setEnabled(false);
-        }
         nextWorkDay.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -110,10 +98,10 @@ public class WorkTimesFragment extends Fragment {
                 Bundle b = new Bundle();
                 b.putSerializable("id", LoadingFragment.TICKETS);
                 b.putSerializable("workday", workDay);
-                b.putSerializable("flag",flag);
-                b.putBoolean("needremove", true);
+                b.putSerializable("flag", flag);
+                //b.putBoolean("needremove", true);
                 f.setArguments(b);
-                ft.add(R.id.fragmentContainer, f);
+                ft.replace(R.id.listContainer, f);
                 ft.commit();
             }
         });

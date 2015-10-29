@@ -48,9 +48,9 @@ public class DoctorsFragment extends Fragment{
                 Doctor selectedDoctor = (Doctor) view.getItemAtPosition(position);
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = manager.beginTransaction();
-                Fragment f = new LoadingFragment();
+                Fragment f = new WorkDaysFragment();
                 Bundle b = new Bundle();
-                b.putSerializable("id", LoadingFragment.WORKDAYS);
+                //b.putSerializable("id", LoadingFragment.WORKDAYS);
                 b.putSerializable("doctor", selectedDoctor);
                 f.setArguments(b);
                 ft.replace(R.id.fragmentContainer, f);

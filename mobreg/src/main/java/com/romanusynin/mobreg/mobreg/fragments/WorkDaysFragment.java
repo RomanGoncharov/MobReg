@@ -22,19 +22,18 @@ import com.romanusynin.mobreg.mobreg.objects.WorkDay;
 import java.util.ArrayList;
 
 public class WorkDaysFragment extends Fragment {
-    private ArrayList<WorkDay> workDays;
     private String week;
     private Doctor doctor;
     private int weekNumber;
+    private Button nextWeek;
+    private Button prevWeek;
     @SuppressWarnings("unchecked")
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        workDays = (ArrayList<WorkDay>) bundle.getSerializable("workdays");
-        week = (String) bundle.getSerializable("week");
         doctor = (Doctor) bundle.getSerializable("doctor");
-        weekNumber = bundle.getInt("weeknum");
+        weekNumber = 1;
     }
 
     @Override
@@ -45,33 +44,33 @@ public class WorkDaysFragment extends Fragment {
         nameDoctor.setText(doctor.getName());
         TextView specDoctor = (TextView)v.findViewById(R.id.specializationDoctor);
         specDoctor.setText(doctor.getSpecialization());
-        WorkDayAdapter adapter = new WorkDayAdapter(getActivity(), workDays);
-        ListView listView = (ListView) v.findViewById(R.id.lvWorkDays);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.listContainer);
+        if (fragment==null){
+            fragment = new LoadingFragment();
+            Bundle b = new Bundle();
+            b.putSerializable("id", LoadingFragment.WORKDAYS); //workdays
+            b.putSerializable("doctor", doctor);
+            b.putBoolean("needremove", true);
+            b.putInt("weeknum", weekNumber);
+            fragment.setArguments(b);
+            fm.beginTransaction()
+                    .add(R.id.listContainer, fragment)
+                    .commit();
+        }else{
+            fragment = new LoadingFragment();
+            Bundle b = new Bundle();
+            b.putSerializable("id", LoadingFragment.WORKDAYS); //workdays
+            b.putSerializable("doctor", doctor);
+            b.putBoolean("needremove", true);
+            b.putInt("weeknum", weekNumber);
+            fragment.setArguments(b);
+            fm.beginTransaction()
+                    .replace(R.id.listContainer, fragment)
+                    .commit();
+        }
 
-            @Override
-            public void onItemClick(AdapterView<?> view, View v, int position,long id){
-
-                WorkDay selectedWorkDay = (WorkDay) view.getItemAtPosition(position);
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                Fragment f = new LoadingFragment();
-                Bundle b = new Bundle();
-                b.putSerializable("id", LoadingFragment.TICKETS); //tickets
-                b.putSerializable("workday", selectedWorkDay);
-                f.setArguments(b);
-                ft.replace(R.id.fragmentContainer, f);
-                ft.addToBackStack(null);
-                ft.commit();
-            }
-
-        });
-        listView.setAdapter(adapter);
-        TextView emptyText = (TextView)v.findViewById(R.id.textCenter);
-        emptyText.setText("На данной неделе талонов нет. Выберите другую неделю.");
-        listView.setEmptyView(emptyText);
-
-        Button prevWeek = (Button) v.findViewById(R.id.prevWeek);
+        prevWeek = (Button) v.findViewById(R.id.prevWeek);
         prevWeek.setText("Пред.");
         if (weekNumber==1){
             prevWeek.setEnabled(false);
@@ -81,21 +80,25 @@ public class WorkDaysFragment extends Fragment {
             @Override
             public void onClick(View arg0) {
                 weekNumber--;
+                nextWeek.setEnabled(true);
+                if (weekNumber==1){
+                    prevWeek.setEnabled(false);
+                }
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = manager.beginTransaction();
                 Fragment f = new LoadingFragment();
                 Bundle b = new Bundle();
                 b.putSerializable("id", LoadingFragment.WORKDAYS); //workdays
                 b.putSerializable("doctor", doctor);
-                b.putBoolean("needremove", true);
+                //b.putBoolean("needremove", true);
                 b.putInt("weeknum", weekNumber);
                 f.setArguments(b);
-                ft.add(R.id.fragmentContainer, f);
+                ft.replace(R.id.listContainer, f);
                 ft.commit();
             }
         });
 
-        Button nextWeek = (Button) v.findViewById(R.id.nextWeek);
+        nextWeek = (Button) v.findViewById(R.id.nextWeek);
         nextWeek.setText("След.");
         if (weekNumber== Constants.MAX_WEEK_NUMBER){
             nextWeek.setEnabled(false);
@@ -105,23 +108,25 @@ public class WorkDaysFragment extends Fragment {
             @Override
             public void onClick(View arg0) {
                 weekNumber++;
+                //Button prevWeek = (Button) arg0.findViewById(R.id.prevWeek);
+                prevWeek.setEnabled(true);
+                if (weekNumber== Constants.MAX_WEEK_NUMBER){
+                    //Button nextWeek = (Button) arg0.findViewById(R.id.nextWeek);
+                    nextWeek.setEnabled(false);
+                }
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = manager.beginTransaction();
                 Fragment f = new LoadingFragment();
                 Bundle b = new Bundle();
                 b.putSerializable("id", LoadingFragment.WORKDAYS); //workdays
                 b.putSerializable("doctor", doctor);
-                b.putBoolean("needremove",true);
+                //b.putBoolean("needremove",true);
                 b.putInt("weeknum", weekNumber);
                 f.setArguments(b);
-                ft.add(R.id.fragmentContainer, f);
+                ft.replace(R.id.listContainer, f);
                 ft.commit();
             }
         });
-
-        TextView tVweek = (TextView) v.findViewById(R.id.weekDates);
-        tVweek.setText(week);
-
         return v;
     }
 }
