@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public class HospitalsFragment extends Fragment {
     private ArrayList<Hospital> hospitals;
     private HospitalAdapter adapter;
+
     @SuppressWarnings("unchecked")
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -31,10 +32,17 @@ public class HospitalsFragment extends Fragment {
         hospitals = (ArrayList<Hospital>) bundle.getSerializable("hospitals");
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.hospitals_layout, parent, false);
         getActivity().setTitle(R.string.title_hospitals_activity);
+        createHospitalList(v);
+        createSearchBox(v);
+        return v;
+    }
+
+    private void createHospitalList(View v){
         adapter = new HospitalAdapter(getActivity(), hospitals);
         ListView listView = (ListView) v.findViewById(R.id.lvHospitals);
         listView.setAdapter(adapter);
@@ -42,22 +50,18 @@ public class HospitalsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> view, View v, int position, long id) {
                 Hospital selectedHospital = (Hospital) view.getItemAtPosition(position);
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                Fragment f = new LoadingFragment();
                 Bundle b = new Bundle();
                 b.putSerializable("id", LoadingFragment.DEPARTMENTS);
                 b.putSerializable("hospital", selectedHospital);
-                f.setArguments(b);
-                ft.replace(R.id.fragmentContainer, f);
-                ft.addToBackStack(null);
-                ft.commit();
+                startLoading(b);
             }
         });
         TextView emptyText = (TextView)v.findViewById(R.id.textCenter);
         emptyText.setText("По данному запросу медицинских учреждений не найдено.");
         listView.setEmptyView(emptyText);
+    }
 
+    private void createSearchBox(View v){
         EditText editsearch = (EditText) v.findViewById(R.id.search);
         editsearch.addTextChangedListener(new TextWatcher() {
 
@@ -78,6 +82,15 @@ public class HospitalsFragment extends Fragment {
                 }
             }
         });
-        return v;
+    }
+
+    private void startLoading(Bundle bundle){
+        LoadingFragment fragment = new LoadingFragment();
+        fragment.setArguments(bundle);
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.replace(R.id.fragmentContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 }

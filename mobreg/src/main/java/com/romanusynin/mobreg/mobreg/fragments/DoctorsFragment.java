@@ -1,6 +1,5 @@
 package com.romanusynin.mobreg.mobreg.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +12,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.romanusynin.mobreg.mobreg.R;
-import com.romanusynin.mobreg.mobreg.activities.WorkDaysActivity;
 import com.romanusynin.mobreg.mobreg.adapters.DoctorAdapter;
 import com.romanusynin.mobreg.mobreg.objects.Department;
 import com.romanusynin.mobreg.mobreg.objects.Doctor;
@@ -39,6 +37,11 @@ public class DoctorsFragment extends Fragment{
         getActivity().setTitle(R.string.title_doctors_activity);
         TextView nameDepartment = (TextView)v.findViewById(R.id.nameDepartment);
         nameDepartment.setText(department.getName());
+        createDoctorsList(v);
+        return v;
+    }
+
+    private void createDoctorsList(View v){
         DoctorAdapter adapter = new DoctorAdapter(getActivity(), doctors);
         ListView listView = (ListView) v.findViewById(R.id.lvDepartments);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -46,20 +49,22 @@ public class DoctorsFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> view, View v, int position,long id){
                 Doctor selectedDoctor = (Doctor) view.getItemAtPosition(position);
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                Fragment f = new WorkDaysFragment();
                 Bundle b = new Bundle();
-                //b.putSerializable("id", LoadingFragment.WORKDAYS);
                 b.putSerializable("doctor", selectedDoctor);
-                f.setArguments(b);
-                ft.replace(R.id.fragmentContainer, f);
-                ft.addToBackStack(null);
-                ft.commit();
+                openWorkDays(b);
             }
 
         });
         listView.setAdapter(adapter);
-        return v;
+    }
+
+    private void openWorkDays(Bundle b){
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+        Fragment f = new WorkDaysFragment();
+        f.setArguments(b);
+        ft.replace(R.id.fragmentContainer, f);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 }

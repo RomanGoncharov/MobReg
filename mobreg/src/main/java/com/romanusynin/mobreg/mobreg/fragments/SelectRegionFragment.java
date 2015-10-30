@@ -20,37 +20,42 @@ public class SelectRegionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.select_region_layout, parent, false);
         getActivity().setTitle(R.string.title_regions_activity);
-        Button buttonOmsk = (Button) v.findViewById(R.id.buttonOmsk);
-        buttonOmsk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoadingFragment fragment = new LoadingFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", LoadingFragment.HOSPITALS);
-                fragment.setArguments(bundle);
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                ft.replace(R.id.fragmentContainer, fragment);
-                ft.addToBackStack(null);
-                ft.commit();
-            }
-        });
+        createOmskBtn(v);
+        createRegionBtn(v);
+        return v;
+    }
 
+    private void createRegionBtn(View v){
         Button buttonOmskState = (Button) v.findViewById(R.id.buttonOmskState);
         buttonOmskState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoadingFragment fragment = new LoadingFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt("id", LoadingFragment.REGIONS);
-                fragment.setArguments(bundle);
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                ft.replace(R.id.fragmentContainer, fragment);
-                ft.addToBackStack(null);
-                ft.commit();
+                startLoading(bundle);
             }
         });
-        return v;
+    }
+
+    private void createOmskBtn(View v){
+        Button buttonOmsk = (Button) v.findViewById(R.id.buttonOmsk);
+        buttonOmsk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", LoadingFragment.HOSPITALS);
+                startLoading(bundle);
+            }
+        });
+    }
+
+    private void startLoading(Bundle bundle){
+        LoadingFragment fragment = new LoadingFragment();
+        fragment.setArguments(bundle);
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.replace(R.id.fragmentContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 }

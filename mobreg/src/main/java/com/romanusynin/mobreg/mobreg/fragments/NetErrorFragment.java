@@ -24,6 +24,11 @@ public class NetErrorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.error_net_layout, parent, false);
         getActivity().setTitle(R.string.title_net_error_fragment);
+        createRefreshBtn(v);
+        return v;
+    }
+
+    private void createRefreshBtn(View v){
         Button reloadButton = (Button) v.findViewById(R.id.reloadButton);
         reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,14 +37,13 @@ public class NetErrorFragment extends Fragment {
                 FragmentTransaction ft = manager.beginTransaction();
                 Fragment f = new LoadingFragment();
                 f.setArguments(b);
-                if (b.getBoolean("needremove",false)) {
-                    ft.add(R.id.fragmentContainer, f);
+                if (b.getBoolean("list",false)) {
+                    ft.replace(R.id.listContainer, f);
                 }else {
                     ft.replace(R.id.fragmentContainer, f);
                 }
                 ft.commit();
             }
         });
-        return v;
     }
 }

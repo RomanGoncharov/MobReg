@@ -27,8 +27,6 @@ public class LoadingFragment extends Fragment {
     private Bundle b;
     private int weeknum;
     private int flag;
-    private LoadingFragment frag;
-    private boolean remove;
 
     public static final int HOSPITALS =0;
     public static final int DOCTORS =1;
@@ -47,8 +45,6 @@ public class LoadingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        frag = this;
-        remove=false;
         Bundle bundle = getArguments();
         b = new Bundle();
         int id = bundle.getInt("id", 6);
@@ -77,7 +73,6 @@ public class LoadingFragment extends Fragment {
         }else if (id == WORKDAYS){
             Doctor doctor = (Doctor) bundle.getSerializable("doctor");
             weeknum = bundle.getInt("weeknum", 1);
-            remove = bundle.getBoolean("needremove", false);
             b.putSerializable("doctor", doctor);
             GetListWorkDaysTask task = new GetListWorkDaysTask();
             task.execute(doctor);
@@ -85,7 +80,6 @@ public class LoadingFragment extends Fragment {
             WorkDay workDay = (WorkDay) bundle.getSerializable("workday");
             b.putSerializable("workday", workDay);
             flag = bundle.getInt("flag", 0);
-            remove = bundle.getBoolean("needremove", false);
             GetListTicketsTask task = new GetListTicketsTask();
             task.execute(workDay);
         }
@@ -102,17 +96,11 @@ public class LoadingFragment extends Fragment {
         protected void onPostExecute(ArrayList<Hospital> hospitals) {
             super.onPostExecute(hospitals);
             if (hospitals == null) {
-                Fragment f = new NetErrorFragment();
-                Bundle bundle = getArguments();
-                f.setArguments(bundle);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragmentContainer, f);
-                ft.commit();
+                b = getArguments();
+                changeFragment(new NetErrorFragment(), false);
             }else{
-                Fragment f = new HospitalsFragment();
                 b.putSerializable("hospitals", hospitals);
-                f.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, f).commit();
+                changeFragment(new HospitalsFragment(), false);
             }
         }
     }
@@ -131,17 +119,11 @@ public class LoadingFragment extends Fragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (regions == null) {
-                Fragment f = new NetErrorFragment();
-                Bundle bundle = getArguments();
-                f.setArguments(bundle);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragmentContainer, f);
-                ft.commit();
+                b = getArguments();
+                changeFragment(new NetErrorFragment(), false);
             }else {
-                Fragment f = new RegionsFragment();
                 b.putSerializable("regions", regions);
-                f.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, f).commit();
+                changeFragment(new RegionsFragment(), false);
             }
         }
     }
@@ -157,17 +139,11 @@ public class LoadingFragment extends Fragment {
         protected void onPostExecute(ArrayList<Doctor> results) {
             super.onPostExecute(results);
             if (results == null) {
-                Fragment f = new NetErrorFragment();
-                Bundle bundle = getArguments();
-                f.setArguments(bundle);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragmentContainer, f);
-                ft.commit();
+                b = getArguments();
+                changeFragment(new NetErrorFragment(), false);
             } else {
-                Fragment f = new DoctorsFragment();
                 b.putSerializable("doctors", results);
-                f.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, f).commit();
+                changeFragment(new DoctorsFragment(), false);
             }
         }
     }
@@ -183,17 +159,11 @@ public class LoadingFragment extends Fragment {
         protected void onPostExecute(ArrayList<Department> departments) {
             super.onPostExecute(departments);
             if (departments == null) {
-                Fragment f = new NetErrorFragment();
-                Bundle bundle = getArguments();
-                f.setArguments(bundle);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragmentContainer, f);
-                ft.commit();
+                b = getArguments();
+                changeFragment(new NetErrorFragment(), false);
             } else {
-                Fragment f = new DepartmentsFragment();
                 b.putSerializable("departments", departments);
-                f.setArguments(b);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, f).commit();
+                changeFragment(new DepartmentsFragment(), false);
             }
         }
     }
@@ -214,32 +184,14 @@ public class LoadingFragment extends Fragment {
         protected void onPostExecute(Parser.WorkDaysAndWeek workDaysAndWeek) {
             super.onPostExecute(workDaysAndWeek);
             if (workDaysAndWeek == null) {
-                Fragment f = new NetErrorFragment();
-                Bundle bundle = getArguments();
-                f.setArguments(bundle);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                if (remove) {
-                    ft.remove(frag);
-                }
-                ft.replace(R.id.listContainer, f);
-                ft.commit();
+                b = getArguments();
+                b.putBoolean("list", true);
+                changeFragment(new NetErrorFragment(), true);
             } else {
-                Fragment f = new WorkDaysListFragment();
-                ArrayList<WorkDay> workDays = workDaysAndWeek.getWorkDays();
-                b.putSerializable("workdays", workDays);
+                b.putSerializable("workdays", workDaysAndWeek.getWorkDays());
                 b.putSerializable("week", workDaysAndWeek.getWeek());
                 b.putInt("weeknum", weeknum);
-                f.setArguments(b);
-                try {
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    if (remove) {
-                        ft.remove(frag);
-                    }
-                    ft.replace(R.id.listContainer, f);
-                    ft.commit();
-                }catch (NullPointerException e){
-                    e.printStackTrace();
-                }
+                changeFragment(new WorkDaysListFragment(), true);
             }
         }
     }
@@ -260,33 +212,32 @@ public class LoadingFragment extends Fragment {
         protected void onPostExecute(final Parser.WorkTimesListAndCookieObject workTimesAndWorkdaysUrls) {
             super.onPostExecute(workTimesAndWorkdaysUrls);
             if (workTimesAndWorkdaysUrls == null) {
-                Fragment f = new NetErrorFragment();
-                Bundle bundle = getArguments();
-                f.setArguments(bundle);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                if (remove) {
-                    ft.remove(frag);
-                }
-                ft.replace(R.id.listContainer, f);
-                ft.commit();
+                b = getArguments();
+                b.putBoolean("list", true);
+                changeFragment(new NetErrorFragment(), true);
             } else {
-                Fragment f = new WorkTimesListFragment();
-                ArrayList<WorkTime> workTimes = workTimesAndWorkdaysUrls.getWorkTimes();
-                b.putSerializable("worktimes", workTimes);
+                b.putSerializable("worktimes", workTimesAndWorkdaysUrls.getWorkTimes());
                 b.putSerializable("cookie", workTimesAndWorkdaysUrls.getCookie());
                 b.putInt("weeknum", weeknum);
-                f.setArguments(b);
-                try {
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    if (remove) {
-                        ft.remove(frag);
-                    }
-                    ft.replace(R.id.listContainer, f);
-                    ft.commit();
-                }catch (NullPointerException e){
-                    e.printStackTrace();
-                }
+                changeFragment(new WorkTimesListFragment(), true);
             }
+        }
+    }
+
+    private void changeFragment(Fragment fragment, boolean list){
+        fragment.setArguments(b);
+        try {
+            int id = R.id.fragmentContainer;
+            if (list){
+                id = R.id.listContainer;
+            }
+            if (getActivity().findViewById(id) != null) {
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(id, fragment);
+                ft.commit();
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
         }
     }
 }

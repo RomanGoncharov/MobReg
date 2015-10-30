@@ -23,27 +23,7 @@ public class RegionsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.regions_layout, container, false);
         getActivity().setTitle(R.string.title_regions_activity);
-        RegionAdapter adapter = new RegionAdapter(getActivity(), this.regions);
-        ListView listView = (ListView) v.findViewById(R.id.lvMain);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> view, View v, int position,long id){
-                Region selectedRegion = (Region) view.getItemAtPosition(position);
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                Fragment f = new LoadingFragment();
-                Bundle b = new Bundle();
-                b.putSerializable("id", LoadingFragment.HOSPITALS);
-                b.putSerializable("region", selectedRegion);
-                f.setArguments(b);
-                ft.replace(R.id.fragmentContainer, f);
-                ft.addToBackStack(null);
-                ft.commit();
-            }
-
-        });
-        listView.setAdapter(adapter);
+        createRegionsList(v);
         return v;
     }
 
@@ -53,5 +33,33 @@ public class RegionsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         regions = (ArrayList<Region>) bundle.getSerializable("regions");
+    }
+
+    private void createRegionsList(View v){
+        RegionAdapter adapter = new RegionAdapter(getActivity(), this.regions);
+        ListView listView = (ListView) v.findViewById(R.id.lvMain);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> view, View v, int position,long id){
+                Region selectedRegion = (Region) view.getItemAtPosition(position);
+                Bundle b = new Bundle();
+                b.putSerializable("id", LoadingFragment.HOSPITALS);
+                b.putSerializable("region", selectedRegion);
+                startLoading(b);
+            }
+
+        });
+        listView.setAdapter(adapter);
+    }
+
+    private void startLoading(Bundle bundle){
+        LoadingFragment fragment = new LoadingFragment();
+        fragment.setArguments(bundle);
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.replace(R.id.fragmentContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 }

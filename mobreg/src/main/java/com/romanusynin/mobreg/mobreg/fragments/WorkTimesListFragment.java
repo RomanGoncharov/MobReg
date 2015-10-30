@@ -25,50 +25,6 @@ public class WorkTimesListFragment extends Fragment {
     private String cookie;
     private WorkDay workDay;
 
-    @Override
-    public View onCreateView (LayoutInflater inflater, ViewGroup container,
-                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.list_workdays_layout, container, false);
-        WorkTimeAdapter adapter = new WorkTimeAdapter(getActivity(), workTimes);
-        ListView listView = (ListView) v.findViewById(android.R.id.list);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> view, View v, int position, long id) {
-                WorkTime selectedWorkTime = (WorkTime) view.getItemAtPosition(position);
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = manager.beginTransaction();
-                Fragment f = new AuthFragment();
-                Bundle b = new Bundle();
-                b.putSerializable("worktime", selectedWorkTime);
-                b.putSerializable("cookie", cookie);
-                f.setArguments(b);
-                ft.replace(R.id.fragmentContainer, f);
-                ft.addToBackStack(null);
-                ft.commit();
-            }
-
-        });
-        listView.setAdapter(adapter);
-        TextView emptyText = (TextView)v.findViewById(R.id.textCenter);
-        emptyText.setText("На данный день талонов нет. Выберите другой день.");
-        listView.setEmptyView(emptyText);
-
-        String prevWorkDayUrl = workDay.getPrevWorkDayUrl();
-        String nextWorkDayUrl = workDay.getNextWorkDayUrl();
-        String currentDate = workDay.getDate();
-        Button prevWorkDay = (Button) getActivity().findViewById(R.id.prevWorkDay);
-        prevWorkDay.setEnabled(prevWorkDayUrl!=null);
-
-        Button nextWorkDay = (Button) getActivity().findViewById(R.id.nextWorkDay);
-        nextWorkDay.setEnabled(nextWorkDayUrl!=null);
-
-        TextView tVweek = (TextView)  getActivity().findViewById(R.id.currentDate);
-        tVweek.setText(currentDate);
-
-        return v;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,5 +33,68 @@ public class WorkTimesListFragment extends Fragment {
         workTimes = (ArrayList<WorkTime>)bundle.getSerializable("worktimes");
         cookie = bundle.getString("cookie");
         workDay = (WorkDay)bundle.getSerializable("workday");
+    }
+
+    @Override
+    public View onCreateView (LayoutInflater inflater, ViewGroup container,
+                              Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.list_workdays_layout, container, false);
+        createWorkTimesList(v);
+        setPrevBtnEnabled();
+        setNextBtnEnabled();
+        setDateText();
+        return v;
+    }
+
+    private void loadSelectedWorktime(WorkTime selectedWorkTime){
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+        Fragment f = new AuthFragment();
+        Bundle b = new Bundle();
+        b.putSerializable("worktime", selectedWorkTime);
+        b.putSerializable("cookie", cookie);
+        f.setArguments(b);
+        ft.replace(R.id.fragmentContainer, f);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    private void createWorkTimesList(View v){
+        WorkTimeAdapter adapter = new WorkTimeAdapter(getActivity(), workTimes);
+        ListView listView = (ListView) v.findViewById(android.R.id.list);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> view, View v, int position, long id) {
+                WorkTime selectedWorkTime = (WorkTime) view.getItemAtPosition(position);
+                loadSelectedWorktime(selectedWorkTime);
+            }
+
+        });
+        listView.setAdapter(adapter);
+        TextView emptyText = (TextView)v.findViewById(R.id.textCenter);
+        emptyText.setText("На данный день талонов нет. Выберите другой день.");
+        listView.setEmptyView(emptyText);
+    }
+
+    private void setPrevBtnEnabled(){
+        String prevWorkDayUrl = workDay.getPrevWorkDayUrl();
+        Button prevWorkDay = (Button) getActivity().findViewById(R.id.prevWorkDay);
+        if (prevWorkDay!=null)
+            prevWorkDay.setEnabled(prevWorkDayUrl != null);
+    }
+
+    private void setNextBtnEnabled(){
+        String nextWorkDayUrl = workDay.getNextWorkDayUrl();
+        Button nextWorkDay = (Button) getActivity().findViewById(R.id.nextWorkDay);
+        if (nextWorkDay!=null)
+            nextWorkDay.setEnabled(nextWorkDayUrl!=null);
+    }
+
+    private void setDateText(){
+        String currentDate = workDay.getDate();
+        TextView tVweek = (TextView)  getActivity().findViewById(R.id.currentDate);
+        if (tVweek!=null)
+            tVweek.setText(currentDate);
     }
 }
