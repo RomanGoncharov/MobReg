@@ -20,7 +20,7 @@ public class DoctorAdapter extends ArrayAdapter <Doctor> {
         public View getView(int position, View convertView, ViewGroup parent) {
             Doctor doctor = getItem(position);
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_listview, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_listelement_layout, parent, false);
             }
             TextView tvName = (TextView) convertView.findViewById(R.id.text1);
             TextView tvOffice = (TextView) convertView.findViewById(R.id.text2);

@@ -21,7 +21,7 @@ public class WorkDayAdapter extends ArrayAdapter<WorkDay> {
     public View getView(int position, View convertView, ViewGroup parent) {
         WorkDay workDay = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_listview, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_listelement_layout, parent, false);
         }
         TextView tvDateTime = (TextView) convertView.findViewById(R.id.text1);
         TextView tvFreeTalons = (TextView) convertView.findViewById(R.id.text2);

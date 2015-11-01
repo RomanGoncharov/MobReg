@@ -29,22 +29,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_6
     }
 
-    signingConfigs {
-        release {
-            storeFile file("C:\\Users\\Roman\\IdeaProjects\\KeyStore.jks")
-            storePassword "soadfanromka"
-            keyAlias "keystore"
-            keyPassword "soadfanromka"
-        }
 
-        buildTypes {
-            release {
-                minifyEnabled false
-                signingConfig signingConfigs.release
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            }
-        }
-    }
 }
 
 dependencies {
@@ -57,5 +42,6 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.android.support:support-v4:23.0.1'
 }
 

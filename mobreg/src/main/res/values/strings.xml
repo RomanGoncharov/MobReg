@@ -11,6 +11,7 @@
     <string name="title_tickets_activity">Выберите время приёма</string>
     <string name="title_take_ticket_activity">Введите ваши данные</string>
     <string name="title_success_activity">Успех</string>
+    <string name="title_net_error_fragment">Ошибка сети</string>
 
 
     <string name="hint_policy">Номер полиса</string>
@@ -35,7 +36,7 @@
     <string name="hint_title">Название аккаунта</string>
 
     <string name="help_title">Помощь</string>
-
+    <string name="loading_title">Загрузка</string>
     <string name="save_text">Сохранить</string>
 
     <!-- Form errors start-->
@@ -43,7 +44,8 @@
     <string name="less_6_error">Длина не должна быть меньше 6 цифр</string>
     <string name="more_16_error">Длина не должна превышать 16 цифр</string>
     <string name="date_format_error">Введите дату в формате dd.mm.yyyy</string>
-    <!-- Form errors end-->
+    <string name="title_activity_test">testActivity</string>
+    <string name="action_settings">Settings</string>
 
 
 </resources>
