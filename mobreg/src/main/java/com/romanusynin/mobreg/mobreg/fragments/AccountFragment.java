@@ -75,11 +75,17 @@ public class AccountFragment extends Fragment{
         saveButton = (Button) v.findViewById(R.id.saveButton);
         if (!isUpdateAccount) saveButton.setEnabled(false);
 
-        titleField.addTextChangedListener(new TextValidator(numberPolicyField) {
+        titleField.addTextChangedListener(new TextValidator(titleField) {
             @Override
             public void validate(EditText editText, String text) {
                 if (text.length() == 0) {
                     editText.setError(getString(R.string.required_error));
+                    saveButton.setEnabled(false);
+                } else {
+                    editText.setError(null);
+                    if (dateBirthField.getError() == null && dateBirthField.getText().length() > 0 &&
+                            numberPolicyField.getError() == null && numberPolicyField.getText().length() > 0)
+                        saveButton.setEnabled(true);
                 }
             }
         });
@@ -99,7 +105,8 @@ public class AccountFragment extends Fragment{
                     saveButton.setEnabled(false);
                 } else {
                     editText.setError(null);
-                    if (dateBirthField.getError()==null && dateBirthField.getText().length() > 0)
+                    if (dateBirthField.getError()==null && dateBirthField.getText().length() > 0 &&
+                            titleField.getError()==null && titleField.getText().length() > 0)
                         saveButton.setEnabled(true);
                 }
             }
@@ -109,13 +116,14 @@ public class AccountFragment extends Fragment{
             @Override
             public void validate(EditText editText, String text) {
                 Pattern p = Pattern.compile("^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012])\\.(19|20)\\d\\d$");
-                Matcher m = p.matcher(text);
+                    Matcher m = p.matcher(text);
                 if (!m.matches()) {
                     editText.setError("Введите дату в формате dd.mm.yyyy");
                     saveButton.setEnabled(false);
                 } else {
                     editText.setError(null);
-                    if (numberPolicyField.getError() == null && numberPolicyField.getText().length() > 0)
+                    if (numberPolicyField.getError() == null && numberPolicyField.getText().length() > 0 &&
+                            titleField.getError()==null && titleField.getText().length() > 0)
                         saveButton.setEnabled(true);
                 }
             }
