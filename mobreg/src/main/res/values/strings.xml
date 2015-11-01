@@ -14,6 +14,8 @@
     <string name="title_net_error_fragment">Ошибка сети</string>
 
 
+    <string name="show_on_map">Показать на карте</string>
+
     <string name="hint_policy">Номер полиса</string>
     <string name="hint_date_birth">Дата рождения</string>
     <string name="alert_of_policy"><b>Полис нового образца:</b> \nвводить полностью 16 знаков номера (например: 5512345678901234)
