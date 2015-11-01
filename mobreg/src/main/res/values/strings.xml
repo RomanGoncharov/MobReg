@@ -48,4 +48,13 @@
     <string name="action_settings">Settings</string>
 
 
+    <!-- Navigation Drawer Menus -->
+    <string name="menu_accounts">Мои аккаунты</string>
+    <string name="menu_create_ticket">Записаться на приём</string>
+    <string name="menu_my_tickets">Мои талоны</string>
+    <string name="menu_map">Показать на карте</string>
+
+
+
+
 </resources>

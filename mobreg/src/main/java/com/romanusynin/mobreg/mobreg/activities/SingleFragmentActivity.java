@@ -1,5 +1,6 @@
 package com.romanusynin.mobreg.mobreg.activities;
 
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -11,6 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.romanusynin.mobreg.mobreg.R;
+import com.romanusynin.mobreg.mobreg.fragments.AccountListFragment;
+import com.romanusynin.mobreg.mobreg.fragments.RegionsFragment;
+import com.romanusynin.mobreg.mobreg.fragments.SelectRegionFragment;
 
 public abstract class SingleFragmentActivity extends AppCompatActivity  {
     Toolbar toolbar;
@@ -28,6 +32,9 @@ public abstract class SingleFragmentActivity extends AppCompatActivity  {
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
+            // Setup drawer view
+        setupDrawerContent(nvDrawer);
         final ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
@@ -59,6 +66,53 @@ public abstract class SingleFragmentActivity extends AppCompatActivity  {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        // Create a new fragment and specify the planet to show based on
+        // position
+        Fragment fragment = null;
+
+        Class fragmentClass;
+        switch(menuItem.getItemId()) {
+            case R.id.nav_accounts_fragment:
+                fragmentClass = AccountListFragment.class;
+                break;
+            case R.id.nav_region_fragment:
+                fragmentClass = SelectRegionFragment.class;
+                break;
+//            case R.id.nav_third_fragment:
+//                fragmentClass = ThirdFragment.class;
+//                break;
+            default:
+                fragmentClass = SelectRegionFragment.class;
+        }
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+
+        // Highlight the selected item, update the title, and close the drawer
+        menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+        mDrawer.closeDrawers();
     }
 
 }
