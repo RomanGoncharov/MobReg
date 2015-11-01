@@ -14,7 +14,7 @@ import com.romanusynin.mobreg.mobreg.objects.Constants;
 import com.romanusynin.mobreg.mobreg.objects.Hospital;
 import com.romanusynin.mobreg.mobreg.objects.Parser;
 import com.romanusynin.mobreg.mobreg.objects.Region;
-import com.squareup.okhttp.Response;
+//import com.squareup.okhttp.Response;
 
 import java.util.ArrayList;
 import java.util.Locale;

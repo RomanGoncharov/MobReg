@@ -58,7 +58,7 @@ public class WorkDaysActivity extends Activity {
                 TextView specDoctor = (TextView)findViewById(R.id.specializationDoctor);
                 specDoctor.setText(doctor.getSpecialization());
                 WorkDayAdapter adapter = new WorkDayAdapter(WorkDaysActivity.this, workDays);
-                ListView listView = (ListView) findViewById(R.id.lvWorkDays);
+                /*ListView listView = (ListView) findViewById(R.id.lvWorkDays);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
@@ -76,7 +76,7 @@ public class WorkDaysActivity extends Activity {
                 TextView emptyText = (TextView)findViewById(R.id.textCenter);
                 emptyText.setText("На данной неделе талонов нет. Выберите другую неделю.");
                 listView.setEmptyView(emptyText);
-
+*/
                 Button prevWeek = (Button) findViewById(R.id.prevWeek);
                 prevWeek.setText("Пред.");
                 if (weekNumber==1){

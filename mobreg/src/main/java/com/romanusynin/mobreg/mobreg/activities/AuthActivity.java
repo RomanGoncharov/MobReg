@@ -89,8 +89,6 @@ public class AuthActivity extends Activity{
 
             }
         });
-
-
     }
 
     class SendPersonalDataTask extends AsyncTask<String, Parser.ResponseObject, Parser.ResponseObject> {

@@ -11,13 +11,14 @@
     <string name="title_tickets_activity">Выберите время приёма</string>
     <string name="title_take_ticket_activity">Введите ваши данные</string>
     <string name="title_success_activity">Успех</string>
+    <string name="title_net_error_fragment">Ошибка сети</string>
 
 
     <string name="hint_policy">Номер полиса</string>
     <string name="hint_date_birth">Дата рождения</string>
-    <string name="alert_of_policy">Полис нового образца: вводить полностью 16 знаков номера (например: 5512345678901234)
-    \nВременное свидетельство: вводить 9 знаков номера (например: 048123456)
-    \nПолис старого образца: вводить только 6 знаков номера без серии (например: 123456)</string>
+    <string name="alert_of_policy"><b>Полис нового образца:</b> \nвводить полностью 16 знаков номера (например: 5512345678901234)
+    \n<b>Временное свидетельство:</b> \nвводить 9 знаков номера (например: 048123456)
+    \n<b>Полис старого образца:</b> \nвводить только 6 знаков номера без серии (например: 123456)</string>
     <string name="continue_text">Продолжить</string>
 
     <string name="error_net_message">При загрузке данных произошла ошибка. Проверьте ваше подключение к сети.</string>
@@ -27,4 +28,33 @@
 
     <string name="success_message">Вы успешно записались на приём</string>
     <string name="back_to_main">Вернуться в главное меню</string>
+
+    <string name="accounts_title">Ваши Аккаунты</string>
+    <string name="accounts_empty">У вас нет аккаунтов.</string>
+
+    <string name="add_account_text">Добавить аккаунт</string>
+    <string name="hint_title">Название аккаунта</string>
+
+    <string name="help_title">Помощь</string>
+    <string name="loading_title">Загрузка</string>
+    <string name="save_text">Сохранить</string>
+
+    <!-- Form errors start-->
+    <string name="required_error">Это поле обязательное</string>
+    <string name="less_6_error">Длина не должна быть меньше 6 цифр</string>
+    <string name="more_16_error">Длина не должна превышать 16 цифр</string>
+    <string name="date_format_error">Введите дату в формате dd.mm.yyyy</string>
+    <string name="title_activity_test">testActivity</string>
+    <string name="action_settings">Settings</string>
+
+
+    <!-- Navigation Drawer Menus -->
+    <string name="menu_accounts">Мои аккаунты</string>
+    <string name="menu_create_ticket">Записаться на приём</string>
+    <string name="menu_my_tickets">Мои талоны</string>
+    <string name="menu_map">Показать на карте</string>
+
+
+
+
 </resources>

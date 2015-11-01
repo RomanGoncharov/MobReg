@@ -61,7 +61,7 @@ public class WorkTimesActivity extends Activity{
                 TextView specDoctor = (TextView)findViewById(R.id.specializationDoctor);
                 specDoctor.setText(workDay.getDoctorSpec());
                 WorkTimeAdapter adapter = new WorkTimeAdapter(WorkTimesActivity.this, workTimes);
-                ListView listView = (ListView) findViewById(R.id.lvTickets);
+               /* ListView listView = (ListView) findViewById(R.id.lvTickets);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
@@ -79,7 +79,7 @@ public class WorkTimesActivity extends Activity{
                 TextView emptyText = (TextView)findViewById(R.id.textEmpty);
                 emptyText.setText("На данный день талонов нет. Выберите другой день.");
                 listView.setEmptyView(emptyText);
-
+*/
                 Button prevWorkDay = (Button) findViewById(R.id.prevWorkDay);
                 prevWorkDay.setText("Пред.");
                 if (prevWorkDayUrl==null){
