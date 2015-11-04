@@ -79,8 +79,11 @@ public class DepartmentsFragment extends Fragment {
                 FragmentTransaction ft = manager.beginTransaction();
                 Fragment f = new MapFragment();
                 Bundle b = new Bundle();
-                b.putString("address",hospital.getAddress().replace(" ","")+",Омск,Россия");
-                b.putString("name", hospital.getName());
+                //b.putString("address",hospital.getAddress().replace(" ","")+",Омск,Россия");
+                //b.putString("name", hospital.getName());
+                ArrayList<Hospital> hospitals = new ArrayList<Hospital>();
+                hospitals.add(hospital);
+                b.putSerializable("hospitals",hospitals);
                 f.setArguments(b);
                 ft.replace(R.id.fragmentContainer, f);
                 ft.addToBackStack(null);

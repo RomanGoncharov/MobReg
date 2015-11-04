@@ -1,8 +1,9 @@
 package com.romanusynin.mobreg.mobreg.fragments;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,19 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.vision.barcode.Barcode;
 import com.romanusynin.mobreg.mobreg.R;
 import com.romanusynin.mobreg.mobreg.objects.Hospital;
-import com.romanusynin.mobreg.mobreg.objects.Parser;
-import com.romanusynin.mobreg.mobreg.objects.Region;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -32,30 +29,37 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
     private GoogleMap map;
-    private String address;
+    private ArrayList<Hospital> hospitals;
     private String name;
+    private LatLng pos;
+    private boolean zoomMarker;
+
+    @SuppressWarnings("unchecked")
+    @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        address = bundle.getString("address");
-        name = bundle.getString("name");
+        hospitals = (ArrayList<Hospital>)bundle.getSerializable("hospitals");
+        if (hospitals!=null) {
+            if (hospitals.size() == 1){
+                zoomMarker = true;
+            }else{
+                zoomMarker = false;
+            }
+        }else{
+            zoomMarker = false;
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
         super.onCreateView(inflater, parent, savedInstanceState);
         View v = inflater.inflate(R.layout.map_fragment_layout, parent, false);
-        MapView mapView = (MapView)v.findViewById(R.id.mapview);
-        mapView.onCreate(savedInstanceState);
-        mapView.onResume();
-        MapsInitializer.initialize(this.getActivity());
-        mapView.getMapAsync(this);
+        createMap(v, savedInstanceState);
         return v;
     }
 
@@ -64,10 +68,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         map.getUiSettings().setMyLocationButtonEnabled(false);
         map.setMyLocationEnabled(true);
         this.map = map;
-        new CreateHospitalMarker().execute(address);
+        for (Hospital hospital: hospitals){
+            name = hospital.getName();
+            String address = hospital.getAddress().replace(" ","")+",Омск,Россия";
+            new CreateHospitalMarker().execute(address);
+        }
+        if (!zoomMarker) {
+            moveToMyLocation();
+        }
     }
 
-    public JSONObject getLocationFormGoogle(String placesName) {
+    private void createMap(View v, Bundle savedInstanceState){
+        MapView mapView = (MapView)v.findViewById(R.id.mapview);
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+        MapsInitializer.initialize(this.getActivity());
+        mapView.getMapAsync(this);
+    }
+
+    private void moveToMyLocation(){
+        LocationManager locMan =
+                (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Criteria crit = new Criteria();
+        Location loc = null;
+        try {
+             loc = locMan.getLastKnownLocation(locMan.getBestProvider(crit, false));
+        }catch(SecurityException e){
+            e.printStackTrace();
+        }
+        if(loc!=null) {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(loc.getLatitude(), loc.getLongitude()), 14f));
+        }
+    }
+
+    private JSONObject getLocationFormGoogle(String placesName) {
         OkHttpClient client = new OkHttpClient();
         StringBuilder stringBuilder = new StringBuilder();
         Request request = new Request.Builder()
@@ -91,7 +126,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         return jsonObject;
     }
 
-    public  LatLng getLatLng(JSONObject jsonObject) {
+    private  LatLng getLatLng(JSONObject jsonObject) {
         Double lon = 0.0;
         Double lat = 0.0;
         try {
@@ -117,10 +152,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         @Override
         protected void onPostExecute(JSONObject location) {
             super.onPostExecute(location);
-            if (location == null) {
-
-            }else{
-                LatLng pos = getLatLng(location);
+            if (location != null) {
+                pos = getLatLng(location);
+                if (zoomMarker) {
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 14f));
+                }
                 map.addMarker(new MarkerOptions().position(pos).title(name));
             }
         }
