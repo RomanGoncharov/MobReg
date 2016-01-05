@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.romanusynin.mobreg.mobreg.R;
-import com.romanusynin.mobreg.mobreg.activities.DoctorsActivity;
 import com.romanusynin.mobreg.mobreg.adapters.DepartmentAdapter;
 import com.romanusynin.mobreg.mobreg.objects.Department;
 import com.romanusynin.mobreg.mobreg.objects.Hospital;
@@ -41,6 +40,7 @@ public class DepartmentsFragment extends Fragment {
         getActivity().setTitle(R.string.title_departments_activity);
         createText(v);
         createCallBtn(v);
+        createMapBtn(v);
         createDepartmentList(v);
         return v;
     }
@@ -66,6 +66,30 @@ public class DepartmentsFragment extends Fragment {
         if (hospital.getNumberPhone() == null) {
             callNumber.setVisibility(View.GONE);
         }
+    }
+
+    private void createMapBtn(View v){
+        Button mapBtn = (Button) v.findViewById(R.id.showOnMap);
+        mapBtn.setText(R.string.show_on_map);
+        mapBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+                Fragment f = new MapFragment();
+                Bundle b = new Bundle();
+                //b.putString("address",hospital.getAddress().replace(" ","")+",Омск,Россия");
+                //b.putString("name", hospital.getName());
+                ArrayList<Hospital> hospitals = new ArrayList<Hospital>();
+                hospitals.add(hospital);
+                b.putSerializable("hospitals",hospitals);
+                f.setArguments(b);
+                ft.replace(R.id.fragmentContainer, f);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        });
     }
 
     private void createDepartmentList(View v){
