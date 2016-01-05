@@ -21,7 +21,6 @@
         <item name="colorPrimary">@color/blue_800</item>
         <item name="colorPrimaryDark">@color/blue_800</item>
         <item name="colorAccent">@color/blue_800</item>
-        <item name="colorControlHighlight">@color/blue_800</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/ic_launcher_48dp</item>

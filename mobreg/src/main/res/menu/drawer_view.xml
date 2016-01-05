@@ -3,13 +3,16 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_first_fragment"
-            android:title="First" />
+            android:id="@+id/nav_accounts_fragment"
+            android:title="@string/menu_accounts" />
         <item
-            android:id="@+id/nav_second_fragment"
-            android:title="Second" />
+            android:id="@+id/nav_region_fragment"
+            android:title="@string/menu_create_ticket" />
         <item
-            android:id="@+id/nav_third_fragment"
-            android:title="Third" />
+            android:id="@+id/nav_my_tickets_fragment"
+            android:title="@string/menu_my_tickets" />
+        <item
+            android:id="@+id/nav_map_fragment"
+            android:title="@string/menu_map" />
     </group>
 </menu>
